@@ -4,14 +4,11 @@
 variable "cluster_name" {
   type        = string
   description = "(Required) The name of the Managed Kubernetes Cluster to create."
+  default     = null
 }
 variable "location" {
   type        = string
   description = " (Required) The location where the Managed Kubernetes Cluster should be created"
-}
-variable "kubernetes_version" {
-  type        = string
-  description = "(optional) describe your variable"
 }
 variable "resource_group_name" {
   type        = string
@@ -33,14 +30,14 @@ variable "automatic_channel_upgrade" {
   default     = "stable"
 }
 variable "api_server_authorized_ip_ranges" {
-  type        = string
+  type        = list(string)
   description = "Optional) The IP ranges to allow for incoming traffic to the server nodes."
   default     = null
 }
 variable "kubernetes_version" {
   type        = string
   description = "(optional) Version of Kubernetes specified when creating the AKS managed cluster."
-  default     = "1.24"
+  default     = "1.23"
 }
 variable "node_resource_group" {
   type        = string
@@ -60,7 +57,7 @@ variable "private_cluster_enabled" {
 variable "private_dns_zone_id" {
   type        = string
   description = "(Optional) Either the ID of Private DNS Zone which should be delegated to this Cluster, System to have AKS manage this or None"
-  default     = "System"
+  default     = null
 }
 variable "private_cluster_public_fqdn_enabled" {
   type        = bool
@@ -109,6 +106,7 @@ variable "tags" {
   default = {
     managed_by = "terraform"
   }
+
 }
 variable "env" {
   type        = string
@@ -155,7 +153,11 @@ variable "net_profile_pod_cidr" {
   description = "(Optional) The CIDR to use for pod IP addresses."
   default     = null
 }
-
+variable "net_profile_service_cidr" {
+  type        = string
+  description = "(optional) The Network Range used by the Kubernetes service."
+  default     = null
+}
 ################
 ##Linux Profile##
 ################
@@ -210,10 +212,6 @@ variable "max_unready_percentage" {
   type        = string
   description = "(optional)  Maximum percentage of unready nodes the cluster autoscaler will stop if the percentage is exceeded."
   default     = "45"
-}
-variable "name" {
-  type        = string
-  description = "(optional) describe your variable"
 }
 variable "new_pod_scale_up_delay" {
   type        = string
@@ -278,7 +276,7 @@ variable "skip_nodes_with_system_pods" {
 variable "managed_ad_rbac" {
   type        = bool
   description = "(optional) Is the Azure Active Directory integration Managed, meaning that Azure will create/manage the Service Principal used for integration"
-  default     = true
+  default     = false
 }
 variable "tenant_id" {
   type        = string
@@ -306,7 +304,7 @@ variable "server_app_id" {
   description = "(optional) The Server ID of an Azure Active Directory Application."
   default     = null
 }
-variable "server_app_secretme" {
+variable "server_app_secret" {
   type        = string
   description = "(optional) The Server Secret of an Azure Active Directory Application."
   default     = null
@@ -322,6 +320,11 @@ variable "enable_auto_scaling" {
   type        = bool
   default     = true
 }
+variable "node_pool_name" {
+  type        = string
+  description = "(Required) Name of node pool within AKS cluster"
+  default     = "nodepool"
+}
 variable "orchestrator_version" {
   type        = string
   description = "(optional)  (Optional) Version of Kubernetes used for the Agents. If not specified, the default node pool will be created with the version specified by kubernetes_version"
@@ -332,6 +335,16 @@ variable "node_count" {
   type        = number
   description = "(optional) The initial number of nodes which should exist in this Node Pool.(when auto scaling is disabled)"
   default     = 2
+}
+variable "min_count" {
+  type        = number
+  description = "(Required for Auo Scale Enabled) The minimum number of nodes which should exist in this Node Pool."
+  default     = 2
+}
+variable "max_count" {
+  type        = number
+  description = "(Required for Auo Scale Enabled) The maximum number of nodes which should exist in this Node Pool."
+  default     = 5
 }
 variable "vm_size" {
   type        = string
@@ -348,51 +361,128 @@ variable "vnet_subnet_id" {
   description = "(optional) ) The ID of a Subnet where the Kubernetes Node Pool should exist."
   default     = null
 }
-variable "" {
-  type        = string
-  description = "(optional) describe your variable"
+variable "enable_node_public_ip" {
+  type        = bool
+  description = "(Optional) Should nodes in this Node Pool have a Public IP Address?"
+  default     = false
 }
-variable "name" {
+variable "node_public_ip_prefix_id" {
   type        = string
-  description = "(optional) describe your variable"
+  description = "(Optional) Resource ID for the Public IP Addresses Prefix for the nodes in this Node Pool"
+  default     = null
 }
-variable "name" {
-  type        = string
-  description = "(optional) describe your variable"
+variable "node_labels" {
+  type        = map(string)
+  description = "(Optional) A map of Kubernetes labels which should be applied to nodes in the Default Node Pool."
+  default     = {}
 }
-variable "name" {
+variable "agents_type" {
   type        = string
-  description = "(optional) describe your variable"
+  description = "(Optional) The type of Node Pool which should be created. Possible values are AvailabilitySet and VirtualMachineScaleSets"
+  default     = "VirtualMachineScaleSets"
+
 }
-variable "" {
-  type        = string
-  description = "(optional) describe your variable"
+variable "only_critical_addons_enabled" {
+  type        = bool
+  description = "((Optional) Enabling this option will taint default node pool with CriticalAddonsOnly=true:NoSchedule taint."
+  default     = null
 }
-variable "name" {
+variable "kubelet_disk_type" {
   type        = string
-  description = "(optional) describe your variable"
+  description = "(Optional) The type of disk used by kubelet"
+  default     = null
 }
-variable "name" {
-  type        = string
-  description = "(optional) describe your variable"
+variable "agents_tags" {
+  type        = map(string)
+  description = "(optional) Tags attached to default node pool"
+  default = {
+    type       = "agent node pool"
+    managed_by = "terraform"
+    env        = "kubernetes"
+  }
 }
-variable "name" {
-  type        = string
-  description = "(optional) describe your variable"
+variable "max_pods" {
+  type        = number
+  description = "(Optional) The maximum number of pods that can run on each agent."
+  default     = null
 }
-variable "" {
-  type        = string
-  description = "(optional) describe your variable"
+variable "enable_host_encryption" {
+  type        = bool
+  description = " (Optional) Should the nodes in the Default Node Pool have host encryption enabled?"
+  default     = null
 }
-variable "name" {
-  type        = string
-  description = "(optional) describe your variable"
+variable "custom_kubelet_config" {
+  type        = bool
+  description = "(optional) Whether to enable kubelet config or not?"
+  default     = false
 }
-variable "name" {
-  type        = string
-  description = "(optional) describe your variable"
+variable "container_log_max_line" {
+  type        = number
+  description = "(Optional) Specifies the maximum number of container log files that can be present for a container"
+  default     = null
 }
-variable "name" {
+variable "container_log_max_size_mb" {
   type        = string
-  description = "(optional) describe your variable"
+  description = "(Optional) Specifies the maximum size (e.g. 10MB) of container log file before it is rotated."
+  default     = null
+}
+variable "swap_file_size_mb" {
+  type        = string
+  description = "(Optional) Specifies the size of swap file on each node in MB"
+  default     = null
+}
+variable "client_id" {
+  type        = string
+  description = "(optional) The Client ID for the Service Principal."
+  default     = ""
+}
+variable "client_secret" {
+  type        = string
+  description = "(optional) The Client Secret for the Service Principal."
+  default     = ""
+}
+variable "identity_ids" {
+  type        = list(string)
+  description = "(Optional) Specifies a list of User Assigned Managed Identity IDs to be assigned to this Kubernetes Cluster"
+  default     = null
+}
+variable "identity_type" {
+  type        = string
+  description = " (Required) Specifies the type of Managed Service Identity that should be configured on this Kubernetes Cluster."
+  default     = "SystemAssigned"
+}
+variable "secret_rotation_enabled" {
+  type        = bool
+  description = "(Required) Is secret rotation enabled?"
+  default     = false
+}
+variable "secret_rotation_interval" {
+  type        = number
+  description = "(Required) The interval to poll for secret rotation."
+  default     = null
+}
+variable "enable_kublet_identity" {
+  type        = bool
+  description = "(optional) Whether to enable kublet identity or not?"
+  default     = false
+}
+variable "kublet_client_id" {
+  type        = string
+  description = "(Required) The Client ID of the user-defined Managed Identity to be assigned to the Kubelets."
+  default     = null
+}
+variable "kubelet_object_id" {
+  type        = string
+  description = "(Required) The Object ID of the user-defined Managed Identity assigned to the Kubelets."
+  default     = null
+}
+variable "kubelet_user_assigned_identity_id" {
+  type        = string
+  description = " (Required) The ID of the User Assigned Identity assigned to the Kubelets"
+  default     = null
+}
+variable "log_analytics_workspace_id" {
+  type        = string
+  description = "(optional) Log analytics where oms agent will push logs"
+  default     = null
 }

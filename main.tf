@@ -1,9 +1,13 @@
+module "ssh-key" {
+  source = "./ssh_key_module"
+}
+
 resource "azurerm_kubernetes_cluster" "aks" {
   name                                = var.cluster_name == null ? "aks-cluster-${var.location}-${var.env}" : var.cluster_name
   location                            = var.location
   resource_group_name                 = var.resource_group_name
   kubernetes_version                  = var.kubernetes_version
-  node_resource_group                 = "${var.node_resource_group}-${var.env}"
+  node_resource_group                 = var.node_resource_group
   dns_prefix                          = try(var.dns_prefix, null)
   dns_prefix_private_cluster          = var.dns_prefix == null ? var.dns_prefix_private_cluster : null
   automatic_channel_upgrade           = var.automatic_channel_upgrade
@@ -11,7 +15,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   private_cluster_enabled             = var.private_cluster_enabled
   private_dns_zone_id                 = var.private_dns_zone_id
   private_cluster_public_fqdn_enabled = var.private_cluster_public_fqdn_enabled
-  api_server_authorized_ip_ranges     = var.api_server_authorized_ip_ranges
+  api_server_authorized_ip_ranges     = toset(var.api_server_authorized_ip_ranges)
   azure_policy_enabled                = var.azure_policy_enabled
   http_application_routing_enabled    = var.http_application_routing_enabled
   local_account_disabled              = var.local_account_disabled
@@ -85,7 +89,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     for_each = var.enable_auto_scaling == true ? [] : ["default_node_pool_manually_scaled"]
     content {
       orchestrator_version         = var.kubernetes_version == "" ? var.orchestrator_version : var.kubernetes_version
-      name                         = var.cluster_name == null ? "aks-cluster-nodepool-${var.location}-${var.env}" : "${var.cluster_name}-nodepool"
+      name                         = var.node_pool_name
       node_count                   = var.node_count
       vm_size                      = var.vm_size
       os_disk_size_gb              = var.os_disk_size_gb
@@ -125,8 +129,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
     content {
       max_count                    = var.max_count
       min_count                    = var.min_count
-      orchestrator_version         = var.orchestrator_version
-      name                         = var.agents_pool_name
+      orchestrator_version         = var.kubernetes_version == "" ? var.orchestrator_version : var.kubernetes_version
+      name                         = var.node_pool_name
       node_count                   = null
       vm_size                      = var.vm_size
       os_disk_size_gb              = var.os_disk_size_gb
@@ -185,12 +189,12 @@ resource "azurerm_kubernetes_cluster" "aks" {
     }
   }
 
-  dyamic "kubelet_identity" {
+  dynamic "kubelet_identity" {
     for_each = var.enable_kublet_identity ? ["kubelet_identiry"] : []
     content {
-      client_id              = var.client_id
-      object_id              = var.object_id
-      user_assigned_identity = var.user_assigned_identity
+      client_id                 = var.kublet_client_id
+      object_id                 = var.kubelet_object_id
+      user_assigned_identity_id = var.kubelet_user_assigned_identity_id
     }
   }
 
