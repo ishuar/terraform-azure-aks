@@ -7,6 +7,7 @@ resource "azurerm_resource_group" "aks_rg" {
   }
 }
 
+## Minimal Example
 module "aks" {
   source = "../"
 
@@ -15,8 +16,13 @@ module "aks" {
   kubernetes_version  = "1.23.5"
   node_resource_group = "rg-node-aks-module-test-euw"
   dns_prefix          = "exampleaks1"
+
+  tags = {
+    type = "aks-module"
+  }
 }
 
+## Outputs 
 output "pub_key" {
   value = module.aks.ssh_pub_key
 }
