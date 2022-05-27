@@ -53,8 +53,10 @@
 | <a name="input_enable_host_encryption"></a> [enable\_host\_encryption](#input\_enable\_host\_encryption) | (Optional) Should the nodes in the Default Node Pool have host encryption enabled? | `bool` | `null` | no |
 | <a name="input_enable_kublet_identity"></a> [enable\_kublet\_identity](#input\_enable\_kublet\_identity) | (optional) Whether to enable kublet identity or not? | `bool` | `false` | no |
 | <a name="input_enable_node_public_ip"></a> [enable\_node\_public\_ip](#input\_enable\_node\_public\_ip) | (Optional) Should nodes in this Node Pool have a Public IP Address? | `bool` | `false` | no |
+| <a name="input_enabled_for_disk_encryption"></a> [enabled\_for\_disk\_encryption](#input\_enabled\_for\_disk\_encryption) | (optional)Boolean flag to specify whether Azure Disk Encryption is permitted to retrieve secrets from the vault and unwrap keys. | `bool` | `false` | no |
 | <a name="input_env"></a> [env](#input\_env) | (Optional) Env in which AKS is deployed | `string` | `"dev"` | no |
 | <a name="input_expander"></a> [expander](#input\_expander) | (optional)Expander to use | `string` | `"random"` | no |
+| <a name="input_expiration_date"></a> [expiration\_date](#input\_expiration\_date) | (optional) Expiration UTC datetime (2024-01-31T00:00:00Z) | `string` | `"2024-01-31T00:00:00Z"` | no |
 | <a name="input_http_application_routing_enabled"></a> [http\_application\_routing\_enabled](#input\_http\_application\_routing\_enabled) | (Optional) Should HTTP Application Routing be enabled? | `bool` | `false` | no |
 | <a name="input_identity_ids"></a> [identity\_ids](#input\_identity\_ids) | (Optional) Specifies a list of User Assigned Managed Identity IDs to be assigned to this Kubernetes Cluster | `list(string)` | `null` | no |
 | <a name="input_identity_type"></a> [identity\_type](#input\_identity\_type) | (Required) Specifies the type of Managed Service Identity that should be configured on this Kubernetes Cluster. | `string` | `"SystemAssigned"` | no |
@@ -95,6 +97,7 @@
 | <a name="input_private_cluster_public_fqdn_enabled"></a> [private\_cluster\_public\_fqdn\_enabled](#input\_private\_cluster\_public\_fqdn\_enabled) | (Optional) Specifies whether a Public FQDN for this Private Cluster should be added. | `bool` | `false` | no |
 | <a name="input_private_dns_zone_id"></a> [private\_dns\_zone\_id](#input\_private\_dns\_zone\_id) | (Optional) Either the ID of Private DNS Zone which should be delegated to this Cluster, System to have AKS manage this or None | `string` | `null` | no |
 | <a name="input_public_ssh_key"></a> [public\_ssh\_key](#input\_public\_ssh\_key) | (Required) The Public SSH Key used to access the cluster. | `string` | `""` | no |
+| <a name="input_purge_protection_enabled"></a> [purge\_protection\_enabled](#input\_purge\_protection\_enabled) | (optional) Is Purge Protection enabled for this Key Vault? | `bool` | `false` | no |
 | <a name="input_role_based_access_control_enabled"></a> [role\_based\_access\_control\_enabled](#input\_role\_based\_access\_control\_enabled) | (Optional) - Whether Role Based Access Control for the Kubernetes Cluster should be enabled. | `bool` | `true` | no |
 | <a name="input_run_command_enabled"></a> [run\_command\_enabled](#input\_run\_command\_enabled) | (Optional) Whether to enable run command for the cluster or not. | `bool` | `true` | no |
 | <a name="input_scale_down_delay_after_add"></a> [scale\_down\_delay\_after\_add](#input\_scale\_down\_delay\_after\_add) | (optional) How long after the scale up of AKS nodes the scale down evaluation resumes. | `string` | `"10m"` | no |
@@ -111,8 +114,11 @@
 | <a name="input_skip_nodes_with_local_storage"></a> [skip\_nodes\_with\_local\_storage](#input\_skip\_nodes\_with\_local\_storage) | (optional)  If true cluster autoscaler will never delete nodes with pods with local storage, for example, EmptyDir or HostPath | `bool` | `true` | no |
 | <a name="input_skip_nodes_with_system_pods"></a> [skip\_nodes\_with\_system\_pods](#input\_skip\_nodes\_with\_system\_pods) | (optional)  If true cluster autoscaler will never delete nodes with pods from kube-system (except for DaemonSet or mirror pods) | `bool` | `true` | no |
 | <a name="input_sku_tier"></a> [sku\_tier](#input\_sku\_tier) | (Optional) The SKU Tier that should be used for this Kubernetes Cluster | `string` | `"Free"` | no |
+| <a name="input_soft_delete_retention_days"></a> [soft\_delete\_retention\_days](#input\_soft\_delete\_retention\_days) | (optional) he number of days that items should be retained for once soft-deleted. | `number` | `7` | no |
+| <a name="input_ssh_key_vault_name"></a> [ssh\_key\_vault\_name](#input\_ssh\_key\_vault\_name) | (optional) Key Vault name where private key would be stored as password | `string` | `"kv-ssh-key-aks-module"` | no |
+| <a name="input_ssh_kv_secret"></a> [ssh\_kv\_secret](#input\_ssh\_kv\_secret) | (optional) KV secret which contains the ssh ppk generated for aks module | `string` | `"secret-ppk-aks-module"` | no |
 | <a name="input_swap_file_size_mb"></a> [swap\_file\_size\_mb](#input\_swap\_file\_size\_mb) | (Optional) Specifies the size of swap file on each node in MB | `string` | `null` | no |
-| <a name="input_tags"></a> [tags](#input\_tags) | (Optional) Tags needs to be attached to the cluster | `map(string)` | <pre>{<br>  "managed_by": "terraform"<br>}</pre> | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | (Optional) Tags needs to be attached to the cluster | `map(string)` | `{}` | no |
 | <a name="input_tenant_id"></a> [tenant\_id](#input\_tenant\_id) | (optional) The Tenant ID used for Azure Active Directory Application | `string` | `null` | no |
 | <a name="input_vm_size"></a> [vm\_size](#input\_vm\_size) | (optional)  The size of the Virtual Machine for agents in nodepool | `string` | `"Standard_D2s_v3"` | no |
 | <a name="input_vnet_subnet_id"></a> [vnet\_subnet\_id](#input\_vnet\_subnet\_id) | (optional) ) The ID of a Subnet where the Kubernetes Node Pool should exist. | `string` | `null` | no |
