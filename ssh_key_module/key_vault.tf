@@ -48,4 +48,7 @@ resource "azurerm_key_vault_secret" "kv_secret" {
   content_type    = "ssh-key"
   expiration_date = var.expiration_date
   tags            = var.tags
+  depends_on = [
+    azurerm_key_vault_access_policy.user_access_policy
+  ]
 }
