@@ -11,3 +11,9 @@ provider "azurerm" {
   features {}
 }
 
+locals {
+  tags = {
+    type       = "aks-module"
+    managed_by = "terraform"
+  }
+}
