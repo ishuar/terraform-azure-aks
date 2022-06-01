@@ -1,23 +1,3 @@
-#tfsec:ignore:azure-keyvault-specify-network-acl
-module "ssh-key" {
-  source                      = "./ssh_key_module"
-  resource_group_name         = var.resource_group_name
-  location                    = var.location
-  ssh_key_vault_name          = var.ssh_key_vault_name
-  enabled_for_disk_encryption = var.enabled_for_disk_encryption
-  soft_delete_retention_days  = var.soft_delete_retention_days
-  purge_protection_enabled    = var.purge_protection_enabled #tfsec:ignore:azure-keyvault-no-purge
-  ssh_kv_secret               = var.ssh_kv_secret
-  expiration_date             = var.expiration_date
-
-  tags = merge(var.tags,
-    {
-      env        = var.env
-      managed_by = "terraform"
-    },
-  )
-}
-
 resource "azurerm_kubernetes_cluster" "aks" {
   name                                = var.cluster_name == null ? "aks-cluster-${var.location}-${var.env}" : var.cluster_name
   location                            = var.location
@@ -62,7 +42,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     admin_username = var.admin_username
     ssh_key {
       # remove any new lines using the replace interpolation function
-      key_data = replace((var.public_ssh_key == "" ? module.ssh-key.public_ssh_key : var.public_ssh_key), "\n", "")
+      key_data = replace(var.public_ssh_key, "\n", "")
     }
   }
 
