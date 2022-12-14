@@ -24,3 +24,7 @@ module "aks" {
   default_node_pool_min_count           = 1
   tags                                  = local.tags
 }
+
+/*
+* Use command "az aks get-credentials --resource-group rg-aks-module-test-euw --name example-aks1 --admin" for admin access.
+*/
