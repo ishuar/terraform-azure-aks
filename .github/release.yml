@@ -3,18 +3,15 @@ changelog:
     labels:
       - chore
   categories:
-    - title: Breaking Changes 🛠
+    - title: ⚠️ Breaking Changes ⚠️
       labels:
         - breaking-change
-    - title: New Modules 🍻
-      labels:
-        - "module request"
-    - title: Exciting New Features 🎉
+    - title: ⭐️ Exciting New Features ⭐️
       labels:
         - enhancement
-    - title: Bug Fixes 🔧
+    - title: 🔧 Bug Fixes 🔧
       labels:
         - bug
-    - title: Other Changes
+    - title: 💡 Other Changes 💡
       labels:
         - "*"
