@@ -9,7 +9,7 @@ output "azurerm_kubernetes_cluster" {
 }
 output "additional_node_pool_ids" {
   value = {
-    for k, v in azurerm_kubernetes_cluster_node_pool.node_pool : k => v.id
+    for k, v in azurerm_kubernetes_cluster_node_pool.this : k => v.id
   }
   description = "The IDs of the additional Kubernetes Cluster Node Pools."
 }

@@ -39,12 +39,12 @@ variable "location" {
 
 variable "dns_prefix" {
   type        = string
-  description = "(optional) DNS prefix specified when creating the managed cluster.(Required) When dns_prefix_private_cluster is not specif"
+  description = "(optional) Required when dns_prefix_private_cluster is not specified. DNS prefix specified when creating the managed cluster."
   default     = null
 }
 variable "dns_prefix_private_cluster" {
   type        = string
-  description = "(optional) Specifies the DNS prefix to use with private clusters.(Required) When dns_prefix is not specified."
+  description = "(optional) Required when dns_prefix is not specified. Specifies the DNS prefix to use with private clusters."
   default     = null
 }
 
@@ -59,6 +59,48 @@ variable "automatic_channel_upgrade" {
   default     = "node-image"
 }
 
+variable "enable_maintenance_window" {
+  type        = bool
+  description = "(optional) Whether to enable the maintenance window or not?"
+  default     = true
+}
+
+variable "enable_allowed_maintenance_window" {
+  type        = bool
+  description = "(optional) Whether to enable the [allowed maintenance window](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster#allowed) block or not?"
+  default     = true
+}
+
+variable "enable_not_allowed_maintenance_window" {
+  type        = bool
+  description = "(optional) Whether to enable the [not_allowed maintenance window](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster#not_allowed) block or not?"
+  default     = false
+}
+
+variable "allowed_maintenance_window_day" {
+  type        = string
+  description = "(optional) Required if `enable_allowed_maintenance_window` is set to true. A day in a week. Possible values are `Sunday`, `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday` and `Saturday`"
+  default     = "Monday"
+}
+
+variable "allowed_maintenance_window_hours" {
+  type        = list(any)
+  description = "(optional) Required if `enable_allowed_maintenance_window` is set to true. An array of hour slots in a day. For example, specifying 1 will allow maintenance from 1:00am to 2:00am. Specifying 1, 2 will allow maintenance from 1:00am to 3:00m. Possible values are between 0 and 23"
+  default     = [6, 2]
+}
+
+variable "not_allowed_maintenance_window_end" {
+  type        = string
+  description = "(optional) Required if `enable_not_allowed_maintenance_window` is set to true The end of a time span, formatted as an RFC3339 string."
+  default     = null
+}
+
+variable "not_allowed_maintenance_window_start" {
+  type        = string
+  description = "(optional) Required if `enable_not_allowed_maintenance_window` is set to true The start of a time span, formatted as an RFC3339 string."
+  default     = null
+}
+
 variable "network_plugin" {
   type        = string
   description = "(Optional) Network plugin to use for networking."
@@ -71,12 +113,22 @@ variable "network_policy" {
   default     = "calico"
 }
 
+variable "load_balancer_sku" {
+  type        = string
+  description = " (Optional) Specifies the SKU of the Load Balancer used for this Kubernetes Cluster. Possible values are basic and standard. Defaults to standard. Changing this forces a new resource to be created."
+  default     = "standard"
+}
 variable "api_server_authorized_ip_ranges" {
   type        = set(string)
-  description = "(Optional) The IP ranges to allow for incoming traffic to the server nodes."
+  description = "(Optional) The IP ranges to allow for incoming traffic to the cluster nodes."
   default     = null
 }
 
+variable "default_node_pool_zones" {
+  type        = list(string)
+  description = "(Optional) Specifies a list of Availability Zones in which this Kubernetes Cluster should be located. Changing this forces a new Kubernetes Cluster to be created."
+  default     = []
+}
 variable "azure_policy_enabled" {
   type        = bool
   description = "Optional) Should the Azure Policy Add-On be enabled? more info: https://docs.microsoft.com/en-ie/azure/governance/policy/concepts/rego-for-aks"
@@ -131,6 +183,12 @@ variable "node_resource_group" {
 variable "oidc_issuer_enabled" {
   type        = bool
   description = "(Optional) Enable or Disable the OIDC issuer URL"
+  default     = null
+}
+
+variable "workload_identity_enabled" {
+  type        = bool
+  description = "(Optional) Specifies whether Azure AD Workload Identity should be enabled for the Cluster. Defaults to false"
   default     = null
 }
 
@@ -209,6 +267,91 @@ variable "docker_bridge_cidr" {
   default     = null
 }
 
+variable "enable_api_server_access_profile" {
+  type        = bool
+  description = "(Optional) Whether to enable API server access profile or not?"
+  default     = false
+}
+
+variable "api_server_access_profile_authorized_ip_ranges" {
+  type        = set(string)
+  description = "(Optional) Set of authorized IP ranges to allow access to API server."
+  default     = null
+}
+
+variable "api_server_access_profile_subnet_id" {
+  type        = string
+  description = "(Optional) The ID of the Subnet where the API server endpoint is delegated to."
+  default     = null
+}
+
+variable "vnet_integration_enabled" {
+  type        = bool
+  description = "Should API Server VNet Integration be enabled? For more details please visit [Use API Server VNet Integration.](https://learn.microsoft.com/en-us/azure/aks/api-server-vnet-integration)"
+  default     = null
+}
+
+variable "image_cleaner_enabled" {
+  type        = bool
+  description = "(Optional) Specifies whether Image Cleaner is enabled."
+  default     = false
+}
+
+variable "image_cleaner_interval_hours" {
+  type        = number
+  description = " (Optional) Specifies the interval in hours when images should be cleaned up."
+  default     = null
+}
+
+variable "pod_cidrs" {
+  type        = list(string)
+  description = "(Optional) A list of CIDRs to use for pod IP addresses. For single-stack networking a single IPv4 CIDR is expected. For dual-stack networking an IPv4 and IPv6 CIDR are expected. Changing this forces a new resource to be created."
+  default     = null
+}
+
+variable "service_cidrs" {
+  type        = list(string)
+  description = "(Optional) A list of CIDRs to use for Kubernetes services. For single-stack networking a single IPv4 CIDR is expected. For dual-stack networking an IPv4 and IPv6 CIDR are expected. Changing this forces a new resource to be created."
+  default     = null
+}
+
+variable "ebpf_data_plane" {
+  type        = string
+  description = "(Optional) Specifies the eBPF data plane used for building the Kubernetes network. Possible value is cilium. Changing this forces a new resource to be created."
+  default     = null
+}
+
+variable "network_plugin_mode" {
+  type        = string
+  description = "(Optional) Specifies the network plugin mode used for building the Kubernetes network. Possible value is overlay. Changing this forces a new resource to be created."
+  default     = null
+}
+
+variable "blob_driver_enabled" {
+  type        = bool
+  description = "(Optional) Is the Blob CSI driver enabled? Defaults to false"
+  default     = false
+}
+variable "disk_driver_enabled" {
+  description = "(Optional) Is the Disk CSI driver enabled? Defaults to true."
+  type        = bool
+  default     = true
+}
+variable "disk_driver_version" {
+  description = "(Optional) Disk CSI Driver version to be used. Possible values are v1 and v2. Defaults to v1."
+  type        = string
+  default     = "v1"
+}
+variable "file_driver_enabled" {
+  description = "(Optional) Is the File CSI driver enabled? Defaults to true."
+  type        = bool
+  default     = true
+}
+variable "snapshot_controller_enabled" {
+  description = "(Optional) Is the Snapshot Controller enabled? Defaults to true."
+  type        = bool
+  default     = true
+}
 ############
 # AAD RBAC #
 ############
@@ -238,19 +381,19 @@ variable "aad_rbac_managed_admin_group_ids" {
 
 variable "aad_rbac_unmanaged_client_app_id" {
   type        = string
-  description = "(Optional) The Client ID of an Azure Active Directory Application. required if aad_rbac_managed = false"
+  description = "(Optional) Required if aad_rbac_managed = false. The Client ID of an Azure Active Directory Application. "
   default     = null
 }
 
 variable "aad_rbac_unmanaged_server_app_id" {
   type        = string
-  description = "(Optional) The Server ID of an Azure Active Directory Application, required if aad_rbac_managed = false"
+  description = "(Optional) Required if aad_rbac_managed = false. The Server ID of an Azure Active Directory Application."
   default     = null
 }
 
 variable "aad_rbac_unmanaged_server_app_secret" {
   type        = string
-  description = "(Optional) The Server Secret of an Azure Active Directory Application., required if aad_rbac_managed = false"
+  description = "(Optional) Required if aad_rbac_managed = false. The Server Secret of an Azure Active Directory Application."
   default     = null
 }
 ##############
@@ -271,7 +414,8 @@ variable "identity_ids" {
 #####################
 variable "default_node_pool_name" {
   type        = string
-  description = "(Required) The name which should be used for the default Kubernetes Node Pool."
+  description = "(Optional) Required when `existing_aks_cluster` is set to false. The name which should be used for the default Kubernetes Node Pool."
+  default     = ""
 }
 
 variable "default_node_pool_vm_size" {
@@ -282,7 +426,8 @@ variable "default_node_pool_vm_size" {
 
 variable "default_node_pool_node_count" {
   type        = number
-  description = "(Required) The number of nodes which should exist in default Node Pool"
+  description = "(Optional) Required when `existing_aks_cluster` is set to false. The number of nodes which should exist in default Node Pool."
+  default     = null
 }
 
 variable "default_node_pool_max_count" {
@@ -386,6 +531,12 @@ variable "default_node_pool_upgrade_max_surge" {
   type        = string
   description = "(Optional) The maximum number or percentage of nodes which will be added to the Node Pool size during an upgrade. ref : https://registry.terraform.io/providers/hashicorp/azurerm/3.9.0/docs/resources/kubernetes_cluster#max_surge"
   default     = "2"
+}
+
+variable "default_node_pool_max_pods" {
+  type        = string
+  description = "(Optional) The maximum number of pods that can run on each agent. Changing this forces a new resource to be created."
+  default     = null
 }
 
 #######################
@@ -519,3 +670,107 @@ variable "additional_node_pools" {
   default     = {}
 }
 
+variable "kubernetes_cluster_id" {
+  type        = string
+  description = "(optional) Kubernetes Cluster ID of the existing aks cluster"
+  default     = ""
+}
+
+
+################################
+# Monitor Diagnostic Variables #
+#################################
+
+variable "enable_cluster_log_monitor_diagnostic" {
+  type        = bool
+  description = "(optional) Whether to enable the log monitor diagnostic for flexible postgresql server or not?"
+  default     = false
+}
+
+variable "enable_cluster_all_category_group_log" {
+  type        = bool
+  description = "(optional) Whether to enable all category group log for flexible postgresql cluster or not?"
+  default     = false
+}
+
+variable "enable_cluster_audit_category_group_log" {
+  type        = string
+  description = "(optional) Whether to enable only audit category group log for flexible postgresql cluster or not?"
+  default     = true
+}
+
+variable "enable_cluster_custom_categories_log" {
+  type        = string
+  description = "(optional) Whether to enable custom categories log for flexible postgresql cluster or not?"
+  default     = false
+}
+
+variable "enable_cluster_log_retention_policy" {
+  type        = bool
+  description = "(optional) Whether to enable log retention policy for flexible postgresql cluster or not?"
+  default     = true
+}
+variable "cluster_log_retention_policy_days" {
+  type        = string
+  description = "(optional) The number of days for which this Retention Policy should apply for logs for flexible postgresql cluster."
+  default     = 30
+}
+
+variable "enable_cluster_all_metrics" {
+  type        = bool
+  description = "(optional) Whether to enable all metrics for diagnostics for flexible postgresql cluster or not?"
+  default     = false
+}
+
+variable "enable_cluster_metric_retention_policy" {
+  type        = string
+  description = "(optional) Whether to enable metric retention policy for flexible postgresql cluster or not?"
+  default     = true
+}
+
+variable "cluster_metric_retention_policy_days" {
+  type        = string
+  description = "(optional) The number of days for which this Retention Policy should apply for metrics for flexible postgresql cluster."
+  default     = 30
+}
+
+variable "cluster_custom_log_categories" {
+  type        = list(string)
+  description = "(optional) A list of strings with supported category groups for postgresql cluster log monitoring diagnostics"
+  default     = []
+}
+variable "monitor_diagnostic_storage_account_id" {
+  type        = string
+  description = "(optional) The ID of the Storage Account where logs should be sent."
+  default     = null
+}
+
+variable "eventhub_name" {
+  type        = string
+  description = "(optional) Specifies the name of the Event Hub where Diagnostics Data should be sent."
+  default     = null
+}
+
+variable "eventhub_authorization_rule_id" {
+  type        = string
+  description = "(optional) Specifies the ID of an Event Hub Namespace Authorization Rule used to send Diagnostics Data."
+  default     = null
+}
+
+variable "monitor_diagnostic_log_analytics_workspace_id" {
+  type        = string
+  description = "(optional) Specifies the ID of a Log Analytics Workspace where Diagnostics Data should be sent."
+  default     = null
+}
+
+variable "monitor_diagnostic_log_analytics_destination_type" {
+  type        = string
+  description = "(optional)  Possible values are AzureDiagnostics and Dedicated. When set to Dedicated, logs sent to a Log Analytics workspace will go into resource specific tables, instead of the legacy AzureDiagnostics table"
+  default     = null
+}
+
+variable "partner_solution_id" {
+  type        = string
+  description = "(optional) The ID of the market partner solution where Diagnostics Data should be sent. For potential partner integrations, click to learn more about partner integration."
+  default     = null
+}
