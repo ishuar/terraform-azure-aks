@@ -28,8 +28,8 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_name"></a> [name](#input\_name) | (Required) The name of the Managed Kubernetes Cluster to create. | `string` | n/a | yes |
-| <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) Specifies the Resource Group where the Managed Kubernetes Cluster should exist. | `string` | n/a | yes |
+| <a name="input_name"></a> [name](#input\_name) | (Required) The name of the Managed Kubernetes Cluster to create or the existing kubernetes cluster to use with the module | `string` | n/a | yes |
+| <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Required) Specifies the Resource Group where the new or existing Managed Kubernetes Cluster exists. | `string` | n/a | yes |
 | <a name="input_aad_azure_rbac_enabled"></a> [aad\_azure\_rbac\_enabled](#input\_aad\_azure\_rbac\_enabled) | (Optional) Is Role Based Access Control based on Azure AD enabled? | `bool` | `null` | no |
 | <a name="input_aad_rbac_enabled"></a> [aad\_rbac\_enabled](#input\_aad\_rbac\_enabled) | (Optional)If AAD RBAC should be enabled | `bool` | `false` | no |
 | <a name="input_aad_rbac_managed"></a> [aad\_rbac\_managed](#input\_aad\_rbac\_managed) | (Optional) Is the Azure Active Directory integration Managed, meaning that Azure will create/manage the Service Principal used for integration | `bool` | `true` | no |

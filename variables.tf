@@ -23,12 +23,12 @@ variable "vnet_subnet_id" {
 ################
 variable "name" {
   type        = string
-  description = "(Required) The name of the Managed Kubernetes Cluster to create."
+  description = "(Required) The name of the Managed Kubernetes Cluster to create or the existing kubernetes cluster to use with the module"
 }
 
 variable "resource_group_name" {
   type        = string
-  description = "(Required) Specifies the Resource Group where the Managed Kubernetes Cluster should exist."
+  description = "(Required) Specifies the Resource Group where the new or existing Managed Kubernetes Cluster exists."
 }
 
 variable "location" {
