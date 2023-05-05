@@ -17,5 +17,5 @@ module "aks" {
 }
 
 /*
-* Use command "az aks get-credentials --resource-group rg-aks-module-test-euw --name example-aks1 --admin" for admin access.
+* Use command "az aks get-credentials --resource-group ${RESOURE_GROUP_NAME}--name ${CLUSTER_NAME} --admin" for admin access.
 */
