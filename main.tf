@@ -93,6 +93,9 @@ resource "azurerm_kubernetes_cluster" "this" {
     fips_enabled                 = var.default_node_pool_fips_enabled
     max_pods                     = var.default_node_pool_max_pods
     zones                        = var.default_node_pool_zones
+    proximity_placement_group_id = var.default_node_pool_proximity_placement_group_id
+    message_of_the_day           = var.default_node_pool_message_of_the_day
+    workload_runtime             = var.default_node_pool_workload_runtime
     upgrade_settings {
       max_surge = var.default_node_pool_upgrade_max_surge
     }
@@ -182,31 +185,37 @@ resource "azurerm_kubernetes_cluster" "this" {
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "this" {
-  for_each                 = var.additional_node_pools
-  name                     = try(each.value["os_type"], null) == "Windows" ? format("%s%s", substr(each.key, 0, 3), substr(each.key, -3, -1)) : each.key
-  kubernetes_cluster_id    = local.aks_cluster.id
-  vm_size                  = each.value["vm_size"]
-  enable_auto_scaling      = try(each.value["enable_auto_scaling"], null)
-  enable_host_encryption   = try(each.value["enable_host_encryption"], null)
-  enable_node_public_ip    = try(each.value["enable_node_public_ip"], null)
-  eviction_policy          = try(each.value["priority"], null) == "Spot" ? try(each.value["eviction_policy"], null) : null
-  mode                     = try(each.value["mode"], null)
-  node_labels              = merge({ "aks_cluster_name" = var.name }, (try(each.value["node_labels"], null)))
-  node_public_ip_prefix_id = try(each.value["enable_node_public_ip"], false) ? try(each.value["node_public_ip_prefix_id"], null) : null
-  node_taints              = try(each.value["node_taints"], null)
-  orchestrator_version     = try(each.value["orchestrator_version"], var.kubernetes_version)
-  os_disk_size_gb          = try(each.value["os_disk_size_gb"], null)
-  os_disk_type             = try(each.value["os_disk_type"], null)
-  pod_subnet_id            = try(each.value["pod_subnet_id"], null)
-  os_type                  = try(each.value["os_type"], null)
-  scale_down_mode          = try(each.value["scale_down_mode"], null)
-  ultra_ssd_enabled        = try(each.value["ultra_ssd_enabled"], null)
-  vnet_subnet_id           = var.vnet_subnet_id
-  zones                    = try(each.value["zones"], null)
-  node_count               = each.value["node_count"]
-  max_count                = try(each.value["enable_auto_scaling"], false) ? each.value["max_count"] : null
-  min_count                = try(each.value["enable_auto_scaling"], false) ? each.value["min_count"] : null
-  max_pods                 = try(each.value["max_pods"], null)
+  for_each                     = var.additional_node_pools
+  name                         = try(each.value["os_type"], null) == "Windows" ? format("%s%s", substr(each.key, 0, 3), substr(each.key, -3, -1)) : each.key
+  kubernetes_cluster_id        = local.aks_cluster.id
+  vm_size                      = each.value["vm_size"]
+  enable_auto_scaling          = try(each.value["enable_auto_scaling"], null)
+  enable_host_encryption       = try(each.value["enable_host_encryption"], null)
+  enable_node_public_ip        = try(each.value["enable_node_public_ip"], null)
+  eviction_policy              = try(each.value["priority"], null) == "Spot" ? try(each.value["eviction_policy"], null) : null
+  mode                         = try(each.value["mode"], null)
+  node_labels                  = merge({ "aks_cluster_name" = var.name }, (try(each.value["node_labels"], null)))
+  node_public_ip_prefix_id     = try(each.value["enable_node_public_ip"], false) ? try(each.value["node_public_ip_prefix_id"], null) : null
+  node_taints                  = try(each.value["node_taints"], null)
+  orchestrator_version         = try(each.value["orchestrator_version"], var.kubernetes_version)
+  os_disk_size_gb              = try(each.value["os_disk_size_gb"], null)
+  os_disk_type                 = try(each.value["os_disk_type"], null)
+  pod_subnet_id                = try(each.value["pod_subnet_id"], null)
+  os_type                      = try(each.value["os_type"], null)
+  scale_down_mode              = try(each.value["scale_down_mode"], null)
+  ultra_ssd_enabled            = try(each.value["ultra_ssd_enabled"], null)
+  vnet_subnet_id               = var.vnet_subnet_id
+  zones                        = try(each.value["zones"], null)
+  node_count                   = each.value["node_count"]
+  max_count                    = try(each.value["enable_auto_scaling"], false) ? each.value["max_count"] : null
+  min_count                    = try(each.value["enable_auto_scaling"], false) ? each.value["min_count"] : null
+  max_pods                     = try(each.value["max_pods"], null)
+  workload_runtime             = try(each.value["workload_runtime"], null)
+  kubelet_disk_type            = try(each.value["kubelet_disk_type"], null)
+  message_of_the_day           = try(each.value["message_of_the_day"], null)
+  os_sku                       = try(each.value["os_sku"], null)
+  proximity_placement_group_id = try(each.value["proximity_placement_group_id"], null)
+  snapshot_id                  = try(each.value["snapshot_id"], null)
   dynamic "upgrade_settings" {
     for_each = try(each.value.upgrade_settings, {})
     content {

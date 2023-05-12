@@ -426,19 +426,19 @@ variable "default_node_pool_vm_size" {
 
 variable "default_node_pool_node_count" {
   type        = number
-  description = "(Optional) Required when `existing_aks_cluster` is set to false. The number of nodes which should exist in default Node Pool."
+  description = "(Optional) Required when `default_node_pool_enable_auto_scaling` is set to false. The number of nodes which should exist in default Node Pool."
   default     = null
 }
 
 variable "default_node_pool_max_count" {
   type        = number
-  description = "(Optional) The maximum number of nodes which should exist in this Node Pool. (Required) If autoscaling is enabled, the maximum number of nodes"
+  description = "(Optional) Required when `default_node_pool_enable_auto_scaling` is set to true. The maximum number of nodes which should exist in this Node Pool."
   default     = null
 }
 
 variable "default_node_pool_min_count" {
   type        = number
-  description = "(Optional) The minimum number of nodes which should exist in this Node Pool. (Required) If autoscaling is enabled, the maximum number of nodes"
+  description = "(Optional) Required when `default_node_pool_enable_auto_scaling` is set to true. The minimum number of nodes which should exist in this Node Pool."
   default     = null
 }
 
@@ -539,11 +539,26 @@ variable "default_node_pool_max_pods" {
   default     = null
 }
 
+variable "default_node_pool_proximity_placement_group_id" {
+  type        = string
+  description = "(Optional) The ID of the Proximity Placement Group. Changing this forces a new resource to be created."
+  default     = null
+}
+variable "workload_runtime" {
+  type        = string
+  description = "(Optional) Specifies the workload runtime used by the node pool. Possible values are OCIContainer and KataMshvVmIsolation"
+  default     = null
+}
+variable "message_of_the_day" {
+  type        = string
+  description = "(Optional) A base64-encoded string which will be written to /etc/motd after decoding. This allows customization of the message of the day for Linux nodes. It cannot be specified for Windows nodes and must be a static string (i.e. will be printed raw and not executed as a script). Changing this forces a new resource to be created"
+  default     = null
+}
 #######################
 # auto scaler profile #
 #######################
 
-##  Need to add once this is really required
+##TODO: Add this later.
 # variable "auto_scaler_profile" {
 #   type        = any
 #   description = "Settings for auto scaling, see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster#balance_similar_node_groups"
