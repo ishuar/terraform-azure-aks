@@ -206,7 +206,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "this" {
   ultra_ssd_enabled            = try(each.value["ultra_ssd_enabled"], null)
   vnet_subnet_id               = var.vnet_subnet_id
   zones                        = try(each.value["zones"], null)
-  node_count                   = each.value["node_count"]
+  node_count                   = try(each.value["node_count"], null) ## Required when `each.value["enable_auto_scaling"]` is set to false
   max_count                    = try(each.value["enable_auto_scaling"], false) ? each.value["max_count"] : null
   min_count                    = try(each.value["enable_auto_scaling"], false) ? each.value["min_count"] : null
   max_pods                     = try(each.value["max_pods"], null)
