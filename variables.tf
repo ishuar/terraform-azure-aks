@@ -544,12 +544,12 @@ variable "default_node_pool_proximity_placement_group_id" {
   description = "(Optional) The ID of the Proximity Placement Group. Changing this forces a new resource to be created."
   default     = null
 }
-variable "workload_runtime" {
+variable "default_node_pool_workload_runtime" {
   type        = string
   description = "(Optional) Specifies the workload runtime used by the node pool. Possible values are OCIContainer and KataMshvVmIsolation"
   default     = null
 }
-variable "message_of_the_day" {
+variable "default_node_pool_message_of_the_day" {
   type        = string
   description = "(Optional) A base64-encoded string which will be written to /etc/motd after decoding. This allows customization of the message of the day for Linux nodes. It cannot be specified for Windows nodes and must be a static string (i.e. will be printed raw and not executed as a script). Changing this forces a new resource to be created"
   default     = null
