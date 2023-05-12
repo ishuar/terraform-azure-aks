@@ -15,7 +15,3 @@ module "aks" {
   default_node_pool_name       = "default"
   default_node_pool_node_count = 1
 }
-
-/*
-* Use command "az aks get-credentials --resource-group ${RESOURE_GROUP_NAME}--name ${CLUSTER_NAME} --admin" for admin access.
-*/
