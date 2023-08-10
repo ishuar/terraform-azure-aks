@@ -421,7 +421,7 @@ variable "default_node_pool_name" {
 variable "default_node_pool_vm_size" {
   type        = string
   description = "(optional) The size of the Virtual Machine, such as Standard_DS2_v2."
-  default     = "Standard_B1ls"
+  default     = "Standard_DS2_v2"
 }
 
 variable "default_node_pool_node_count" {
@@ -691,6 +691,19 @@ variable "kubernetes_cluster_id" {
   default     = ""
 }
 
+###################
+# Linux Profile #
+###################
+variable "admin_username" {
+  type        = string
+  description = "(optional) The Admin Username for the Cluster. Changing this forces a new resource to be created."
+  default     = "aks-admin"
+}
+variable "key_data" {
+  type        = string
+  description = "(optional) The Admin Username for the Cluster. Changing this forces a new resource to be created.) An ssh_key block.Only one is currently allowed. Changing this will update the key on all node pools. More information can be found in the [documentation](https://learn.microsoft.com/en-us/azure/aks/node-access#update-ssh-key-on-an-existing-aks-cluster-preview)."
+  default     = ""
+}
 
 ################################
 # Monitor Diagnostic Variables #
@@ -788,4 +801,304 @@ variable "partner_solution_id" {
   type        = string
   description = "(optional) The ID of the market partner solution where Diagnostics Data should be sent. For potential partner integrations, click to learn more about partner integration."
   default     = null
+}
+
+# ####################################
+# # FluxCD AKS Extension #
+# ####################################
+
+variable "enable_fluxcd" {
+  type        = bool
+  description = "(optional) Whether to enable fluxcd extension(GitOps) or not ?"
+  default     = false
+}
+
+variable "fluxcd_extension_name" {
+  type        = string
+  description = "(optional)Specifies the name which should be used for this Kubernetes Cluster Extension. Changing this forces a new Kubernetes Cluster Extension to be created."
+  default     = "fluxcd"
+}
+
+variable "fluxcd_extension_release_train" {
+  type        = string
+  description = "(Optional) The release train used by this extension. Possible values include but are not limited to Stable, Preview. Changing this forces a new Kubernetes Cluster Extension to be created."
+  default     = null
+}
+
+variable "fluxcd_extension_release_namespace" {
+  type        = string
+  description = "(Optional) Namespace where the extension release must be placed for a cluster scoped extension. If this namespace does not exist, it will be created. Changing this forces a new Kubernetes Cluster Extension to be created."
+  default     = null
+}
+
+variable "fluxcd_extension_target_namespace" {
+  type        = string
+  description = "(Optional) Namespace where the extension will be created for a namespace scoped extension. If this namespace does not exist, it will be created. Changing this forces a new Kubernetes Cluster Extension to be created."
+  default     = null
+}
+
+variable "fluxcd_extension_version" {
+  type        = string
+  description = "(Optional) User-specified version that the extension should pin to. If it is not set, Azure will use the latest version and auto upgrade it. Changing this forces a new Kubernetes Cluster Extension to be created."
+  default     = null
+}
+
+variable "fluxcd_configuration_name" {
+  type        = string
+  description = "(Optional) Specifies the name which should be used for this Kubernetes Flux Configuration. Required if `enable_fluxcd` is true. Changing this forces a new Kubernetes Flux Configuration to be created."
+  default     = null
+}
+
+variable "fluxcd_namespace" {
+  type        = string
+  description = "(Optional) Specifies the namespace to which this configuration is installed to. Required if `enable_fluxcd` is true. Changing this forces a new Kubernetes Flux Configuration to be created."
+  default     = null
+}
+variable "fluxcd_scope" {
+  type        = string
+  description = "(Optional) Specifies the scope at which the operator will be installed. Possible values are cluster and namespace. Defaults to namespace. Changing this forces a new Kubernetes Flux Configuration to be created."
+  default     = null
+}
+variable "fluxcd_continuous_reconciliation_enabled" {
+  type        = bool
+  description = "(Optional) Whether the configuration will keep its reconciliation of its kustomizations and sources with the repository. Defaults to true."
+  default     = null
+}
+
+#######################
+# FluxCD Git Repository
+#######################
+#? ref: https://fluxcd.io/flux/components/source/gitrepositories/
+variable "fluxcd_git_repository_url" {
+  type        = string
+  description = "(Optional) Specifies the URL to sync for the flux configuration git repository. It must start with http://, https://, git@ or ssh://. Required if `enable_fluxcd` is true"
+  default     = ""
+}
+
+variable "fluxcd_git_repository_reference_type" {
+  type        = string
+  description = "(Optional) Specifies the source reference type for the GitRepository object. Possible values are branch, commit, semver and tag."
+  default     = "branch"
+}
+
+variable "fluxcd_git_repository_reference_value" {
+  type        = string
+  description = "(Optional) Specifies the source reference value for the GitRepository object."
+  default     = "main"
+}
+
+variable "fluxcd_git_repository_https_ca_cert_base64" {
+  type        = string
+  description = "(Optional) Specifies the Base64-encoded HTTPS certificate authority contents used to access git private git repositories over HTTPS."
+  default     = null
+}
+
+variable "fluxcd_git_repository_https_user" {
+  type        = string
+  description = "(Optional) Specifies the plaintext HTTPS username used to access private git repositories over HTTPS."
+  default     = null
+}
+
+variable "fluxcd_git_repository_https_key_base64" {
+  type        = string
+  description = "(Optional) Specifies the Base64-encoded HTTPS personal access token or password that will be used to access the repository."
+  default     = null
+}
+
+variable "fluxcd_git_repository_local_auth_reference" {
+  type        = string
+  description = "(Optional) Specifies the name of a local secret on the Kubernetes cluster to use as the authentication secret rather than the managed or user-provided configuration secrets. It must be between 1 and 63 characters. It can contain only lowercase letters, numbers, and hyphens (-). It must start and end with a lowercase letter or number."
+  default     = null
+}
+
+variable "fluxcd_git_repository_ssh_private_key_base64" {
+  type        = string
+  description = "(Optional) Specifies the Base64-encoded SSH private key in PEM format."
+  default     = null
+}
+
+variable "fluxcd_git_repository_ssh_known_hosts_base64" {
+  type        = string
+  description = "(Optional) Specifies the Base64-encoded known_hosts value containing public SSH keys required to access private git repositories over SSH."
+  default     = null
+}
+
+variable "fluxcd_git_repository_sync_interval_in_seconds" {
+  type        = number
+  description = "(Optional) Specifies the interval at which to re-reconcile the cluster git repository source with the remote. Defaults to 600."
+  default     = null
+}
+
+variable "fluxcd_git_repository_timeout_in_seconds" {
+  type        = number
+  description = "(Optional) Specifies the maximum time to attempt to reconcile the cluster git repository source with the remote. Defaults to 600."
+  default     = null
+}
+
+#######################
+# FluxCD Kustomizations
+#######################
+
+variable "kustomizations" {
+  type = list(object({
+    path                       = optional(string)
+    name                       = optional(string)
+    timeout_in_seconds         = optional(number)
+    sync_interval_in_seconds   = optional(number)
+    recreating_enabled         = optional(bool)
+    garbage_collection_enabled = optional(bool)
+    retry_interval_in_seconds  = optional(number)
+    depends_on                 = optional(list(string))
+  }))
+
+  description = "(optional) FluxCD Kustomization Configurations. `name` is Required if `enable_fluxcd` is true"
+  default     = []
+}
+
+#######################
+# FluxCD blob Storage
+#######################
+
+variable "fluxcd_blob_storage_container_id" {
+  type        = string
+  description = "(Required) Specifies the Azure Blob container ID."
+  default     = ""
+}
+
+variable "fluxcd_blob_storage_account_key" {
+  type        = string
+  description = "(Optional) Specifies the account key (shared key) to access the storage account."
+  default     = null
+}
+
+variable "fluxcd_blob_storage_local_auth_reference" {
+  type        = string
+  description = "(Optional) Specifies the name of a local secret on the Kubernetes cluster to use as the authentication secret rather than the managed or user-provided configuration secrets."
+  default     = null
+}
+
+variable "fluxcd_blob_storage_sync_interval_in_seconds" {
+  type        = number
+  description = "(Optional) Specifies the interval at which to re-reconcile the cluster Azure Blob source with the remote."
+  default     = null
+}
+
+variable "fluxcd_blob_storage_timeout_in_seconds" {
+  type        = number
+  description = "(Optional) Specifies the maximum time to attempt to reconcile the cluster Azure Blob source with the remote."
+  default     = null
+}
+
+variable "fluxcd_blob_storage_ssas_token" {
+  type        = string
+  description = "(Optional) Specifies the shared access token to access the storage container."
+  default     = null
+}
+
+###########################
+## blob Storage Identities
+###########################
+variable "fluxcd_blob_storage_managed_identity_client_id" {
+  type        = string
+  description = "(Required) Specifies the client ID for authenticating a Managed Identity."
+  default     = ""
+}
+
+variable "fluxcd_blob_storage_service_principal_client_id" {
+  type        = string
+  description = "(Required) Specifies the client ID for authenticating a Service Principal."
+  default     = ""
+}
+
+variable "fluxcd_blob_storage_service_principal_tenant_id" {
+  type        = string
+  description = "(Required) Specifies the tenant ID for authenticating a Service Principal."
+  default     = ""
+}
+variable "fluxcd_blob_storage_service_principal_client_certificate_base64" {
+  type        = string
+  description = "(Optional) Base64-encoded certificate used to authenticate a Service Principal ."
+  default     = null
+}
+
+variable "fluxcd_blob_storage_service_principal_client_certificate_password" {
+  type        = string
+  description = "(Optional) Specifies the password for the certificate used to authenticate a Service Principal ."
+  default     = null
+  sensitive   = true
+}
+
+variable "fluxcd_blob_storage_service_principal_client_certificate_send_chain" {
+  type        = string
+  description = "(Optional) Specifies whether to include x5c header in client claims when acquiring a token to enable subject name / issuer based authentication for the client certificate."
+  default     = null
+}
+
+variable "fluxcd_blob_storage_service_principal_client_secret" {
+  type        = string
+  description = "(Optional) Specifies the client secret for authenticating a Service Principal."
+  default     = null
+  sensitive   = true
+}
+
+#######################
+# FluxCD S3 Bucket
+#######################
+
+variable "enable_fluxcd_bucket" {
+  type        = bool
+  description = "(optional) Whether to enable fluxcd S3 bucket or not?"
+  default     = false
+}
+
+variable "fluxcd_bucket_name" {
+  type        = string
+  description = "(Optional) Specifies the bucket name to sync from the url endpoint for the flux configuration. Required if `enable_fluxcd_bucket` is true."
+  default     = ""
+}
+
+variable "fluxcd_bucket_url" {
+  type        = string
+  description = "(Optional) Specifies the URL to sync for the flux configuration S3 bucket. It must start with http:// or https://. Required if `enable_fluxcd_bucket` is true."
+  default     = ""
+}
+variable "fluxcd_bucket_access_key" {
+  type        = string
+  description = "(Optional) Specifies the plaintext access key used to securely access the S3 bucket."
+  default     = null
+}
+
+variable "fluxcd_bucket_secret_key_base64" {
+  type        = string
+  description = "(Optional) Specifies the Base64-encoded secret key used to authenticate with the bucket source."
+  default     = null
+  sensitive   = true
+}
+variable "fluxcd_bucket_tls_enabled" {
+  type        = bool
+  description = "(Optional) Specify whether to communicate with a bucket using TLS is enabled. Defaults to true."
+  default     = null
+}
+variable "fluxcd_bucket_local_auth_reference" {
+  type        = string
+  description = "(Optional) Specifies the name of a local secret on the Kubernetes cluster to use as the authentication secret rather than the managed or user-provided configuration secrets. It must be between 1 and 63 characters. It can contain only lowercase letters, numbers, and hyphens (-). It must start and end with a lowercase letter or number."
+  default     = null
+}
+
+variable "fluxcd_bucket_sync_interval_in_seconds" {
+  type        = number
+  description = "(Optional) Specifies the interval at which to re-reconcile the cluster git repository source with the remote. Defaults to 600."
+  default     = null
+}
+
+variable "fluxcd_bucket_timeout_in_seconds" {
+  type        = number
+  description = "(Optional) Specifies the maximum time to attempt to reconcile the cluster git repository source with the remote. Defaults to 600."
+  default     = null
+}
+
+variable "enable_fluxcd_az_providers" {
+  type        = bool
+  description = "(optional) Whether to register the azure provider to kubernetes and container namespaces. **Warning** This is an experimental feature only."
+  default     = false
 }
