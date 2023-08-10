@@ -182,6 +182,16 @@ resource "azurerm_kubernetes_cluster" "this" {
     identity_ids = var.identity_ids
   }
 
+  dynamic "linux_profile" {
+    for_each = var.key_data != "" ? [1] : []
+    content {
+      admin_username = var.admin_username
+      ssh_key {
+        key_data = var.key_data
+      }
+    }
+  }
+
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "this" {
@@ -204,7 +214,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "this" {
   os_type                      = try(each.value["os_type"], null)
   scale_down_mode              = try(each.value["scale_down_mode"], null)
   ultra_ssd_enabled            = try(each.value["ultra_ssd_enabled"], null)
-  vnet_subnet_id               = var.vnet_subnet_id
+  vnet_subnet_id               = try(each.value["vnet_subnet_id"], var.vnet_subnet_id)
   zones                        = try(each.value["zones"], null)
   node_count                   = try(each.value["node_count"], null) ## Required when `each.value["enable_auto_scaling"]` is set to false
   max_count                    = try(each.value["enable_auto_scaling"], false) ? each.value["max_count"] : null
