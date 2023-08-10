@@ -10,7 +10,8 @@ module "ssh_key_generator" {
   file_permission      = "600"
 }
 
-## Minimal Example with disabled Autoscaling and disabled monitor diagnostic setting
+## FluxCD enabled Azure Kubernetes Cluster
+## ? ref : https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2?tabs=azure-cli#for-azure-kubernetes-service-clusters
 module "aks" {
   source = "../../"
 
