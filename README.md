@@ -1,3 +1,84 @@
+<!-- PROJECT SHIELDS -->
+<!--
+*** declarations on the bottom of this document
+managed within the footer file
+-->
+[![License][license-shield]][license-url] [![Contributors][contributors-shield]][contributors-url] [![Issues][issues-shield]][issues-url] [![Forks][forks-shield]][forks-url] [![Stargazers][stars-shield]][stars-url]
+
+<div id="top"></div>
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+
+  <h1 align="center"><strong>Azure Kubernetes Service</strong></h1>
+  <p align="center">
+    🌩️ Terraform Module For Provisioning Azure Kubernetes Services 🌩️
+    <br/>
+    <a href="https://github.com/ishuar/terraform-azure-aks/issues"><strong>Report Bug</a></strong> or <a href="https://github.com/ishuar/terraform-azure-aks/issues"><strong>Request Feature</a></strong>
+    <br/>
+    <br/>
+  </p>
+</div>
+
+## Background Knowledge or External Documentation
+
+- [What is Azure Kubernetes Service?](https://learn.microsoft.com/en-us/azure/aks/intro-kubernetes)
+- [Get Started with Flux](https://fluxcd.io/flux/get-started/)
+
+### Pre-requisites
+
+| Name          | Version Used | Help                                                                                                 | Required |
+|---------------|--------------|------------------------------------------------------------------------------------------------------|----------|
+| Terraform     | `>= 1.3.0`   | [Install Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli) | Yes      |
+| Azure Account | `N/A`        | [Create Azure account](https://azure.microsoft.com/en-us/free)                                       | Yes      |
+| azure-cli     | `>=2.50.0`   | [Install azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)                   | Yes      |
+
+**⭐️ Don't forget to give the project a star! Thanks again! ⭐️**
+
+## Introduction
+
+🚀 This module is your ticket to effortlessly create a Azure Kubernetes Service. Whether you're a seasoned cloud architect or just getting started, this module streamlines the process, giving you more time to focus on what truly matters. 🚀
+
+## Available Features
+
+- Azure kubernetes provisioning
+- Multi nodePool deployments.
+- Azure Monitor Diagnostic Settinga.
+- FluxCD azure kubernetes cluster extension.
+
+## Usage
+
+```hcl
+## Minimal Example with disabled Autoscaling and disabled monitor diagnostic settings
+
+resource "azurerm_resource_group" "aks_rg" {
+  name     = "rg-aks-module-test-euw"
+  location = "West Europe"
+}
+
+module "aks" {
+  source  = "ishuar/aks/azure"
+  version ~> "1.5"
+
+  location                     = azurerm_resource_group.aks_rg.name
+  resource_group_name          = azurerm_resource_group.aks_rg.location
+  name                         = "minimal-example"
+  dns_prefix                   = "exampleaks1"
+  default_node_pool_name       = "default"
+  default_node_pool_node_count = 1
+}
+
+```
+
+## Examples
+
+Examples are availabe in `examples` directory.
+
+- [simple](/examples/simple)
+- [flux-enabled-aks](/example/flux-enabled-aks)
+
+## Submodule
+
 ## Requirements
 
 | Name | Version |
@@ -133,6 +214,8 @@ No modules.
 | <a name="input_fluxcd_bucket_url"></a> [fluxcd\_bucket\_url](#input\_fluxcd\_bucket\_url) | (Optional) Specifies the URL to sync for the flux configuration S3 bucket. It must start with http:// or https://. Required if `enable_fluxcd_bucket` is true. | `string` | `""` | no |
 | <a name="input_fluxcd_configuration_name"></a> [fluxcd\_configuration\_name](#input\_fluxcd\_configuration\_name) | (Optional) Specifies the name which should be used for this Kubernetes Flux Configuration. Required if `enable_fluxcd` is true. Changing this forces a new Kubernetes Flux Configuration to be created. | `string` | `null` | no |
 | <a name="input_fluxcd_continuous_reconciliation_enabled"></a> [fluxcd\_continuous\_reconciliation\_enabled](#input\_fluxcd\_continuous\_reconciliation\_enabled) | (Optional) Whether the configuration will keep its reconciliation of its kustomizations and sources with the repository. Defaults to true. | `bool` | `null` | no |
+| <a name="input_fluxcd_extension_configuration_protected_settings"></a> [fluxcd\_extension\_configuration\_protected\_settings](#input\_fluxcd\_extension\_configuration\_protected\_settings) | (optional) Configuration settings that are sensitive, as name-value pairs for configuring this extension | `map(string)` | `{}` | no |
+| <a name="input_fluxcd_extension_configuration_settings"></a> [fluxcd\_extension\_configuration\_settings](#input\_fluxcd\_extension\_configuration\_settings) | (Optional) Configuration settings, as name-value pairs for configuring this extension. | `map(string)` | `{}` | no |
 | <a name="input_fluxcd_extension_name"></a> [fluxcd\_extension\_name](#input\_fluxcd\_extension\_name) | (optional)Specifies the name which should be used for this Kubernetes Cluster Extension. Changing this forces a new Kubernetes Cluster Extension to be created. | `string` | `"fluxcd"` | no |
 | <a name="input_fluxcd_extension_release_namespace"></a> [fluxcd\_extension\_release\_namespace](#input\_fluxcd\_extension\_release\_namespace) | (Optional) Namespace where the extension release must be placed for a cluster scoped extension. If this namespace does not exist, it will be created. Changing this forces a new Kubernetes Cluster Extension to be created. | `string` | `null` | no |
 | <a name="input_fluxcd_extension_release_train"></a> [fluxcd\_extension\_release\_train](#input\_fluxcd\_extension\_release\_train) | (Optional) The release train used by this extension. Possible values include but are not limited to Stable, Preview. Changing this forces a new Kubernetes Cluster Extension to be created. | `string` | `null` | no |
@@ -218,3 +301,42 @@ No modules.
 | <a name="output_additional_node_pool_ids"></a> [additional\_node\_pool\_ids](#output\_additional\_node\_pool\_ids) | The IDs of the additional Kubernetes Cluster Node Pools. |
 | <a name="output_aks_id"></a> [aks\_id](#output\_aks\_id) | AKS cluster ID |
 | <a name="output_azurerm_kubernetes_cluster"></a> [azurerm\_kubernetes\_cluster](#output\_azurerm\_kubernetes\_cluster) | Entire AKS cluster object as an output |
+
+<!-- CONTRIBUTING -->
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+If you have any suggestion that would make this project better, feel free to  fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement" with your suggestion.
+
+**⭐️ Don't forget to give the project a star! Thanks again! ⭐️**
+
+<!-- LICENSE -->
+## License
+
+Released under [MIT](/LICENSE) by [@ishuar](https://github.com/ishuar).
+
+<!-- CONTACT -->
+## Contact
+
+- 👯 [LinkedIn](https://linkedin.com/in/ishuar)
+
+<p align="right"><a href="#top">Back To Top ⬆️</a></p>
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+[contributors-url]: https://github.com/ishuar/terraform-azure-aks/graphs/contributors
+[contributors-shield]: https://img.shields.io/github/contributors/ishuar/terraform-azure-aks?style=for-the-badge
+
+[forks-url]: https://github.com/ishuar/terraform-azure-aks/network/members
+[forks-shield]: https://img.shields.io/github/forks/ishuar/terraform-azure-aks?style=for-the-badge
+
+[stars-url]: https://github.com/ishuar/terraform-azure-aks/stargazers
+[stars-shield]: https://img.shields.io/github/stars/ishuar/terraform-azure-aks?style=for-the-badge
+
+[issues-url]: https://github.com/ishuar/terraform-azure-aks/issues
+[issues-shield]: https://img.shields.io/github/issues/ishuar/terraform-azure-aks?style=for-the-badge
+
+[license-url]: https://github.com/ishuar/terraform-azure-aks/blob/main/LICENSE
+[license-shield]: https://img.shields.io/github/license/ishuar/terraform-azure-aks?style=for-the-badge

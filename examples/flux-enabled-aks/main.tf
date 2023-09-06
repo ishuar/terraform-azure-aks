@@ -31,6 +31,11 @@ module "aks" {
   fluxcd_namespace                   = "flux"
   fluxcd_scope                       = "cluster"
   fluxcd_git_repository_url          = "https://github.com/Azure/gitops-flux2-kustomize-helm-mt"
+  ## Opt Out of Multitenancy https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/conceptual-gitops-flux2#opt-out-of-multi-tenancy
+  fluxcd_extension_configuration_settings = {
+    "multiTenancy.enforce" = false
+  }
+
   kustomizations = [
     {
       name = "infrastructure"

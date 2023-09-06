@@ -50,13 +50,15 @@ resource "azurerm_role_assignment" "fluxcd" {
 resource "azurerm_kubernetes_cluster_extension" "fluxcd" {
   count = var.enable_fluxcd ? 1 : 0
 
-  name              = var.fluxcd_extension_name
-  cluster_id        = local.aks_cluster.id
-  extension_type    = "microsoft.flux"
-  release_train     = var.fluxcd_extension_release_train
-  release_namespace = var.fluxcd_extension_release_namespace
-  target_namespace  = var.fluxcd_extension_target_namespace
-  version           = var.fluxcd_extension_version
+  name                             = var.fluxcd_extension_name
+  cluster_id                       = local.aks_cluster.id
+  extension_type                   = "microsoft.flux"
+  release_train                    = var.fluxcd_extension_release_train
+  release_namespace                = var.fluxcd_extension_release_namespace
+  target_namespace                 = var.fluxcd_extension_target_namespace
+  version                          = var.fluxcd_extension_version
+  configuration_protected_settings = var.fluxcd_extension_configuration_protected_settings
+  configuration_settings           = var.fluxcd_extension_configuration_settings
 
   depends_on = [
     terraform_data.az_providers_register,
