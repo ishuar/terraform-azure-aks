@@ -843,6 +843,19 @@ variable "fluxcd_extension_version" {
   default     = null
 }
 
+variable "fluxcd_extension_configuration_protected_settings" {
+  type        = map(string)
+  description = "(optional) Configuration settings that are sensitive, as name-value pairs for configuring this extension"
+  default     = {}
+}
+
+variable "fluxcd_extension_configuration_settings" {
+  type        = map(string)
+  description = "(Optional) Configuration settings, as name-value pairs for configuring this extension."
+  default     = {}
+}
+
+
 variable "fluxcd_configuration_name" {
   type        = string
   description = "(Optional) Specifies the name which should be used for this Kubernetes Flux Configuration. Required if `enable_fluxcd` is true. Changing this forces a new Kubernetes Flux Configuration to be created."
