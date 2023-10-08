@@ -1,13 +1,7 @@
 name: Validate Pull Request
 on:
   pull_request:
-    types:
-      - opened
-      - edited
-      - synchronize
-      - labeled
-      - unlabeled
-      - reopened
+
 
 jobs:
   validate:
@@ -26,3 +20,10 @@ jobs:
         uses: dflook/terraform-fmt-check@v1
         with:
           path: "${{ github.workspace }}"
+
+      - uses: terraform-docs/gh-actions@v1.0
+        with:
+          working-dir: "${{ github.workspace }}"
+          git-push: "false"
+          config-file: "${{ github.workspace }}/.config/.terraform-docs.yaml"
+          fail-on-diff: "true"

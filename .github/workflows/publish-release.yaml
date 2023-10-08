@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '**/*.tf' ## trigger release if any terraform file changes.
+      - 'scripts/*.sh' ## trigger release if any involved script has been modified.
+      - '.github/workflows/publish-release.yaml'
 
 permissions:
   contents: write
