@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: mheap/github-action-required-labels@v5
+        name: Check Correct Labeling on Pull request
         with:
           mode: exactly
           count: 1
@@ -17,14 +18,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: terraform formatt
+      - name: Check terraform formatt
         uses: dflook/terraform-fmt-check@v1
         with:
           path: "${{ github.workspace }}"
 
       - uses: terraform-docs/gh-actions@v1
+        name: Check Readme Update with Terraform Changes
         with:
           working-dir: "${{ github.workspace }}"
           git-push: "false"
-          config-file: "${{ github.workspace }}/.config/.terraform-docs.yaml"
+          config-file: "${{ github.workspace }}/.config/.terraform-docs.yml"
           fail-on-diff: "true"
