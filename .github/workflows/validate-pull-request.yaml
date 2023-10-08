@@ -23,10 +23,14 @@ jobs:
         with:
           path: "${{ github.workspace }}"
 
-      - uses: terraform-docs/gh-actions@v1
-        name: Check Readme Update with Terraform Changes
-        with:
-          working-dir: "${{ github.workspace }}"
-          config-file: "${{ github.workspace }}/.config/.terraform-docs.yml"
-          fail-on-diff: "true"
-          output-method: "print"
+      - name: Render and check diff on Readme with Terraform Changes
+        run: |
+          curl -sSfL https://github.com/terraform-docs/terraform-docs/releases/download/v0.16.0/terraform-docs-v0.16.0-linux-amd64.tar.gz | tar xzf - terraform-docs
+          chmod +x terraform-docs
+          ./terraform-docs --config "${{ github.workspace }}/.config/.terraform-docs.yml" .
+          git diff --exit-code
+        # with:
+        #   working-dir: "${{ github.workspace }}"
+        #   config-file: "${{ github.workspace }}/.config/.terraform-docs.yml"
+        #   fail-on-diff: "true"
+        #   output-method: "print"
