@@ -20,16 +20,17 @@ jobs:
 
       - name: Create GitHub release
         run: |
-          release_tag="v$(yq '.version' ".github/release.yml")"
+          release_tag="v$(yq '.module_version' "./release-version.yaml")"
+          release_notes="$(yq '.release_notes' "./release-version.yaml")"
 
           echo "Check if the release tag: $release_tag already exists ...."
 
           ## using test case and substituion because git tag command always returns 0 exit code.
           if ! [[ "$(git tag --list "$release_tag")" ]] ; then
             echo "Git Tag: $release_tag does not exists, tag and create a new release"
-            gh release create "$release_tag" --title  "$release_tag" --draft --generate-notes --latest --repo "${{ github.repository_owner }}/${{ github.event.repository.name }}"
+            gh release create "$release_tag" --title  "$release_tag" --draft --generate-notes --latest --repo "${{ github.repository_owner }}/${{ github.event.repository.name }}" --notes "$release_notes"
           else
-            echo "$release_tag already exists, Update the release version in .github/release.yml"
+            echo "$release_tag already exists, Update the module_version in release-version.yaml"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
