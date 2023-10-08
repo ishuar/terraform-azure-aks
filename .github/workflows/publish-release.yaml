@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - '**/*.tf' ## trigger release if any terraform file changes.
+      - '**/*.tf'      ## trigger release if any terraform file changes.
       - 'scripts/*.sh' ## trigger release if any involved script has been modified.
       - '.github/workflows/publish-release.yaml'
 
@@ -32,7 +32,7 @@ jobs:
           ## using test case and substituion because git tag command always returns 0 exit code.
           if ! [[ "$(git tag --list "$release_tag")" ]] ; then
             echo "Git Tag: $release_tag does not exists, tag and create a new release"
-            gh release create "$release_tag" --title  "$release_tag" --draft --generate-notes --latest --repo "${{ github.repository_owner }}/${{ github.event.repository.name }}" --notes "$release_notes"
+            gh release create "$release_tag" --title  "$release_tag" --generate-notes --latest --repo "${{ github.repository_owner }}/${{ github.event.repository.name }}" --notes "$release_notes"
           else
             echo "$release_tag already exists, Update the module_version in release-version.yaml"
           fi
