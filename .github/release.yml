@@ -15,3 +15,5 @@ changelog:
     - title: 💡 Other Changes 💡
       labels:
         - "*"
+
+version: "1.7.0"

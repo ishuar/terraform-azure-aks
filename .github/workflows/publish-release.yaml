@@ -1,0 +1,26 @@
+name: Publish module release
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release-module:
+    runs-on: ubuntu-latest
+    # Skip running release workflow on forks
+    if: github.repository_owner == 'ishuar'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create GitHub release
+        run: |
+          release_tag="v$(yq '.version' ".github/release.yml")"
+          echo "Check if the release tag: $release_tag already exists ...."
+          if ! git tag --list "$release_tag" >/dev/null 2>&1; then
+            echo "Git Tag: $release_tag does not exists, tag and create a new release"
+            gh release create "$release_tag" --title  "$release_tag" --draft --generate-notes --latest --repo "${{ github.repository_owner }}/${{ github.event.repository.name }}"
+          else
+            echo "$release_tag already exists, Update the release version in .github/release.yml"
+          fi
