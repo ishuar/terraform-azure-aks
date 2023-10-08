@@ -134,7 +134,7 @@ resource "azurerm_kubernetes_flux_configuration" "this" {
   dynamic "bucket" {
     for_each = var.enable_fluxcd_bucket && var.fluxcd_bucket_url != "" && var.fluxcd_bucket_name != "" ? toset(["create_bucket_config"]) : toset([])
     content {
-      bucket_name              = var.fluxcd_bucket_bucket_name
+      bucket_name              = var.fluxcd_bucket_name
       url                      = var.fluxcd_bucket_url
       access_key               = var.fluxcd_bucket_access_key
       secret_key_base64        = var.fluxcd_bucket_secret_key_base64
