@@ -80,7 +80,7 @@ variable "enable_not_allowed_maintenance_window" {
 variable "allowed_maintenance_window_day" {
   type        = string
   description = "(optional) Required if `enable_allowed_maintenance_window` is set to true. A day in a week. Possible values are `Sunday`, `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday` and `Saturday`"
-  default     = "Monday"
+  default     = "Saturday"
 }
 
 variable "allowed_maintenance_window_hours" {
@@ -117,11 +117,6 @@ variable "load_balancer_sku" {
   type        = string
   description = " (Optional) Specifies the SKU of the Load Balancer used for this Kubernetes Cluster. Possible values are basic and standard. Defaults to standard. Changing this forces a new resource to be created."
   default     = "standard"
-}
-variable "api_server_authorized_ip_ranges" {
-  type        = set(string)
-  description = "(Optional) The IP ranges to allow for incoming traffic to the cluster nodes."
-  default     = null
 }
 
 variable "default_node_pool_zones" {
@@ -273,7 +268,7 @@ variable "enable_api_server_access_profile" {
   default     = false
 }
 
-variable "api_server_access_profile_authorized_ip_ranges" {
+variable "api_server_authorized_ip_ranges" {
   type        = set(string)
   description = "(Optional) Set of authorized IP ranges to allow access to API server."
   default     = null
@@ -288,7 +283,7 @@ variable "api_server_access_profile_subnet_id" {
 variable "vnet_integration_enabled" {
   type        = bool
   description = "Should API Server VNet Integration be enabled? For more details please visit [Use API Server VNet Integration.](https://learn.microsoft.com/en-us/azure/aks/api-server-vnet-integration)"
-  default     = null
+  default     = false
 }
 
 variable "image_cleaner_enabled" {
@@ -921,6 +916,12 @@ variable "fluxcd_git_repository_https_key_base64" {
 variable "fluxcd_git_repository_local_auth_reference" {
   type        = string
   description = "(Optional) Specifies the name of a local secret on the Kubernetes cluster to use as the authentication secret rather than the managed or user-provided configuration secrets. It must be between 1 and 63 characters. It can contain only lowercase letters, numbers, and hyphens (-). It must start and end with a lowercase letter or number."
+  default     = null
+}
+
+variable "fluxcd_blob_storage_sas_token" {
+  type        = string
+  description = "(Optional) Specifies the shared access token to access the storage container."
   default     = null
 }
 

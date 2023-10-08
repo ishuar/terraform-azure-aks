@@ -4,7 +4,8 @@ data "azurerm_kubernetes_cluster" "this" {
   resource_group_name = var.resource_group_name
 }
 locals {
-  aks_cluster = var.existing_aks_cluster ? data.azurerm_kubernetes_cluster.this[0] : azurerm_kubernetes_cluster.this[0]
+  aks_cluster                      = var.existing_aks_cluster ? data.azurerm_kubernetes_cluster.this[0] : azurerm_kubernetes_cluster.this[0]
+  enable_api_server_access_profile = var.api_server_authorized_ip_ranges != null || var.api_server_access_profile_subnet_id != null || var.vnet_integration_enabled
 }
 resource "azurerm_kubernetes_cluster" "this" {
   count                               = var.existing_aks_cluster ? 0 : 1
@@ -15,7 +16,6 @@ resource "azurerm_kubernetes_cluster" "this" {
   dns_prefix                          = var.dns_prefix
   dns_prefix_private_cluster          = var.dns_prefix_private_cluster
   automatic_channel_upgrade           = var.automatic_channel_upgrade
-  api_server_authorized_ip_ranges     = var.api_server_authorized_ip_ranges
   azure_policy_enabled                = var.azure_policy_enabled
   disk_encryption_set_id              = var.disk_encryption_set_id
   local_account_disabled              = var.local_account_disabled
@@ -124,9 +124,9 @@ resource "azurerm_kubernetes_cluster" "this" {
     }
   }
   dynamic "api_server_access_profile" {
-    for_each = var.enable_api_server_access_profile ? [1] : []
+    for_each = local.enable_api_server_access_profile ? [1] : []
     content {
-      authorized_ip_ranges     = var.api_server_access_profile_authorized_ip_ranges
+      authorized_ip_ranges     = var.api_server_authorized_ip_ranges
       subnet_id                = var.api_server_access_profile_subnet_id
       vnet_integration_enabled = var.vnet_integration_enabled
     }
