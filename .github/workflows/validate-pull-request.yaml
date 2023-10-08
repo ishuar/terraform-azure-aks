@@ -29,3 +29,4 @@ jobs:
           working-dir: "${{ github.workspace }}"
           config-file: "${{ github.workspace }}/.config/.terraform-docs.yml"
           fail-on-diff: "true"
+          output-method: "print"
