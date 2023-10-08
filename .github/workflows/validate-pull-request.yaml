@@ -21,7 +21,7 @@ jobs:
         with:
           path: "${{ github.workspace }}"
 
-      - uses: terraform-docs/gh-actions@v1.0
+      - uses: terraform-docs/gh-actions@v1
         with:
           working-dir: "${{ github.workspace }}"
           git-push: "false"
