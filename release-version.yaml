@@ -1,9 +1,13 @@
 ## Update this file for a new release version.
 
 module_version: "2.0.0"
-release_notes: |
-  Please read the release notes for this release.
 
-    ## What's Changed
-    ### 💡 Other Changes 💡
-    - Automated release workflow.
+## Example for manual release notes.
+# release_notes: |
+#     Please go through the **`What's Changed`** section for complete changelog information.
+
+#     #### 👯 Manual Release Notes 👯
+#     - Added Automated release workflow.
+
+release_notes: |
+    Please go through the **`What's Changed`** section for complete changelog information.

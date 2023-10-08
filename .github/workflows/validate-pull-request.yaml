@@ -1,28 +1,33 @@
 name: Validate Pull Request
 on:
   pull_request:
-    types:
-      - opened
-      - edited
-      - synchronize
-      - labeled
-      - unlabeled
-      - reopened
+
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: mheap/github-action-required-labels@v3
+      - uses: mheap/github-action-required-labels@v5
+        name: Check Correct Labeling on Pull request
         with:
           mode: exactly
           count: 1
-          labels: "breaking-change,enhancement,bug,chore,documentation"
+          labels: "breaking-change,enhancement,bug,chore,documentation,github-actions"
+          add_comment: true
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: terraform formatt
+      - name: Check terraform formatt
         uses: dflook/terraform-fmt-check@v1
         with:
           path: "${{ github.workspace }}"
+
+      - name: Render and check diff on Readme with Terraform Changes
+        run: |
+          curl -sSfL https://github.com/terraform-docs/terraform-docs/releases/download/v0.16.0/terraform-docs-v0.16.0-linux-amd64.tar.gz | tar xzf - terraform-docs
+          chmod +x terraform-docs
+          ./terraform-docs --config "${{ github.workspace }}/.config/.terraform-docs.yml" .
+          echo "**Run make docs from the root of the repository if this check fails**"
+          git diff --exit-code
+
