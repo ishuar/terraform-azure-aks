@@ -27,6 +27,5 @@ jobs:
         name: Check Readme Update with Terraform Changes
         with:
           working-dir: "${{ github.workspace }}"
-          git-push: "false"
           config-file: "${{ github.workspace }}/.config/.terraform-docs.yml"
           fail-on-diff: "true"
