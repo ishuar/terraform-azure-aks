@@ -42,6 +42,7 @@ variable "dns_prefix" {
   description = "(optional) Required when dns_prefix_private_cluster is not specified. DNS prefix specified when creating the managed cluster."
   default     = null
 }
+
 variable "dns_prefix_private_cluster" {
   type        = string
   description = "(optional) Required when dns_prefix is not specified. Specifies the DNS prefix to use with private clusters."
@@ -50,9 +51,16 @@ variable "dns_prefix_private_cluster" {
 
 variable "kubernetes_version" {
   type        = string
-  description = "(Optional) Version of Kubernetes specified when creating the AKS managed cluster. If not specified, the latest recommended version will be used at provisioning time (but won't auto-upgrade)."
-  default     = null
+  description = "(Optional) Version of Kubernetes specified when creating the AKS managed cluster. If not specified, the latest recommended version will be used at provisioning time and will change as per the stable availability of the AKS version. It is also set as orchestrator version of nodepools if not specified."
+  default     = ""
 }
+
+variable "include_preview" {
+  type        = bool
+  description = "(Optional) Should Preview versions of Kubernetes in AKS be included? Defaults to false"
+  default     = false
+}
+
 variable "automatic_channel_upgrade" {
   type        = string
   description = "(Optional) The upgrade channel for this Kubernetes Cluster, see https://docs.microsoft.com/en-us/azure/aks/upgrade-cluster#set-auto-upgrade-channel"
@@ -220,11 +228,6 @@ variable "private_cluster_public_fqdn_enabled" {
   description = "(optional)  Specifies whether a Public FQDN for this Private Cluster should be added."
   default     = null
 }
-variable "public_network_access_enabled" {
-  type        = bool
-  description = "(Optional) Whether public network access is allowed for this Kubernetes Cluster."
-  default     = null
-}
 
 variable "run_command_enabled" {
   type        = bool
@@ -258,7 +261,7 @@ variable "dns_service_ip" {
 
 variable "docker_bridge_cidr" {
   type        = string
-  description = "(Optional) IP address (in CIDR notation) used as the Docker bridge IP address on nodes"
+  description = "(Optional) IP address (in CIDR notation) used as the Docker bridge IP address on nodes. **NOTE**: docker_bridge_cidr has been deprecated as the API no longer supports it and will be removed in version 4.0 of the provider."
   default     = null
 }
 

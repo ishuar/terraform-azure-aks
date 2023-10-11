@@ -58,7 +58,7 @@ resource "azurerm_resource_group" "aks_rg" {
 
 module "aks" {
   source  = "ishuar/aks/azure"
-  version = "~> 1.5"
+  version = "~> 2.1"
 
   location                     = azurerm_resource_group.aks_rg.name
   resource_group_name          = azurerm_resource_group.aks_rg.location
@@ -113,6 +113,7 @@ No modules.
 | [terraform_data.az_providers_register](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) | data source |
 | [azurerm_kubernetes_cluster.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/kubernetes_cluster) | data source |
+| [azurerm_kubernetes_service_versions.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/kubernetes_service_versions) | data source |
 | [azurerm_monitor_diagnostic_categories.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/monitor_diagnostic_categories) | data source |
 
 ## Inputs
@@ -170,7 +171,7 @@ No modules.
 | <a name="input_dns_prefix"></a> [dns\_prefix](#input\_dns\_prefix) | (optional) Required when dns\_prefix\_private\_cluster is not specified. DNS prefix specified when creating the managed cluster. | `string` | `null` | no |
 | <a name="input_dns_prefix_private_cluster"></a> [dns\_prefix\_private\_cluster](#input\_dns\_prefix\_private\_cluster) | (optional) Required when dns\_prefix is not specified. Specifies the DNS prefix to use with private clusters. | `string` | `null` | no |
 | <a name="input_dns_service_ip"></a> [dns\_service\_ip](#input\_dns\_service\_ip) | (Optional) IP address within the Kubernetes service address range that will be used by cluster service discovery (kube-dns). | `string` | `null` | no |
-| <a name="input_docker_bridge_cidr"></a> [docker\_bridge\_cidr](#input\_docker\_bridge\_cidr) | (Optional) IP address (in CIDR notation) used as the Docker bridge IP address on nodes | `string` | `null` | no |
+| <a name="input_docker_bridge_cidr"></a> [docker\_bridge\_cidr](#input\_docker\_bridge\_cidr) | (Optional) IP address (in CIDR notation) used as the Docker bridge IP address on nodes. **NOTE**: docker\_bridge\_cidr has been deprecated as the API no longer supports it and will be removed in version 4.0 of the provider. | `string` | `null` | no |
 | <a name="input_ebpf_data_plane"></a> [ebpf\_data\_plane](#input\_ebpf\_data\_plane) | (Optional) Specifies the eBPF data plane used for building the Kubernetes network. Possible value is cilium. Changing this forces a new resource to be created. | `string` | `null` | no |
 | <a name="input_enable_allowed_maintenance_window"></a> [enable\_allowed\_maintenance\_window](#input\_enable\_allowed\_maintenance\_window) | (optional) Whether to enable the [allowed maintenance window](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster#allowed) block or not? | `bool` | `true` | no |
 | <a name="input_enable_api_server_access_profile"></a> [enable\_api\_server\_access\_profile](#input\_enable\_api\_server\_access\_profile) | (Optional) Whether to enable API server access profile or not? | `bool` | `false` | no |
@@ -241,6 +242,7 @@ No modules.
 | <a name="input_identity_type"></a> [identity\_type](#input\_identity\_type) | (optional) Specifies the type of Managed Service Identity that should be configured on this Kubernetes Cluster. | `string` | `"SystemAssigned"` | no |
 | <a name="input_image_cleaner_enabled"></a> [image\_cleaner\_enabled](#input\_image\_cleaner\_enabled) | (Optional) Specifies whether Image Cleaner is enabled. | `bool` | `false` | no |
 | <a name="input_image_cleaner_interval_hours"></a> [image\_cleaner\_interval\_hours](#input\_image\_cleaner\_interval\_hours) | (Optional) Specifies the interval in hours when images should be cleaned up. | `number` | `null` | no |
+| <a name="input_include_preview"></a> [include\_preview](#input\_include\_preview) | (Optional) Should Preview versions of Kubernetes in AKS be included? Defaults to false | `bool` | `false` | no |
 | <a name="input_ingress_app_gw_enabled"></a> [ingress\_app\_gw\_enabled](#input\_ingress\_app\_gw\_enabled) | If the Ingress Application Gateway is should be enabled or not? | `bool` | `false` | no |
 | <a name="input_ingress_app_gw_id"></a> [ingress\_app\_gw\_id](#input\_ingress\_app\_gw\_id) | (Optional) The ID of the Application Gateway to integrate with the ingress controller of this Kubernetes Cluster, ref:  https://docs.microsoft.com/en-us/azure/application-gateway/tutorial-ingress-controller-add-on-existing | `string` | `null` | no |
 | <a name="input_ingress_app_gw_name"></a> [ingress\_app\_gw\_name](#input\_ingress\_app\_gw\_name) | (Optional) The name of the Application Gateway to be used or created in the Nodepool Resource Group, which in turn will be integrated with the ingress controller of this Kubernetes Cluster, ref: https://docs.microsoft.com/azure/application-gateway/tutorial-ingress-controller-add-on-new | `string` | `null` | no |
@@ -255,7 +257,7 @@ No modules.
 | <a name="input_kubelet_identity_object_id"></a> [kubelet\_identity\_object\_id](#input\_kubelet\_identity\_object\_id) | (optional) The Object ID of the user-defined Managed Identity assigned to the Kubelets.If not specified a Managed Identity is created automatically.Can be also specified when kubelet\_identity is true | `string` | `null` | no |
 | <a name="input_kubelet_identity_user_assigned_identity_id"></a> [kubelet\_identity\_user\_assigned\_identity\_id](#input\_kubelet\_identity\_user\_assigned\_identity\_id) | (optional) The ID of the User Assigned Identity assigned to the Kubelets. If not specified a Managed Identity is created automatically.Can be also specified when kubelet\_identity is true | `string` | `null` | no |
 | <a name="input_kubernetes_cluster_id"></a> [kubernetes\_cluster\_id](#input\_kubernetes\_cluster\_id) | (optional) Kubernetes Cluster ID of the existing aks cluster | `string` | `""` | no |
-| <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | (Optional) Version of Kubernetes specified when creating the AKS managed cluster. If not specified, the latest recommended version will be used at provisioning time (but won't auto-upgrade). | `string` | `null` | no |
+| <a name="input_kubernetes_version"></a> [kubernetes\_version](#input\_kubernetes\_version) | (Optional) Version of Kubernetes specified when creating the AKS managed cluster. If not specified, the latest recommended version will be used at provisioning time and will change as per the stable availability of the AKS version. It is also set as orchestrator version of nodepools if not specified. | `string` | `""` | no |
 | <a name="input_kustomizations"></a> [kustomizations](#input\_kustomizations) | (optional) FluxCD Kustomization Configurations. `name` is Required if `enable_fluxcd` is true | <pre>list(object({<br>    path                       = optional(string)<br>    name                       = optional(string)<br>    timeout_in_seconds         = optional(number)<br>    sync_interval_in_seconds   = optional(number)<br>    recreating_enabled         = optional(bool)<br>    garbage_collection_enabled = optional(bool)<br>    retry_interval_in_seconds  = optional(number)<br>    depends_on                 = optional(list(string))<br>  }))</pre> | `[]` | no |
 | <a name="input_load_balancer_sku"></a> [load\_balancer\_sku](#input\_load\_balancer\_sku) | (Optional) Specifies the SKU of the Load Balancer used for this Kubernetes Cluster. Possible values are basic and standard. Defaults to standard. Changing this forces a new resource to be created. | `string` | `"standard"` | no |
 | <a name="input_local_account_disabled"></a> [local\_account\_disabled](#input\_local\_account\_disabled) | (Optional) - If true local accounts will be disabled. Defaults to false. see https://docs.microsoft.com/en-us/azure/aks/managed-aad#azure-ad-authentication-overview | `bool` | `null` | no |
@@ -279,7 +281,6 @@ No modules.
 | <a name="input_private_cluster_enabled"></a> [private\_cluster\_enabled](#input\_private\_cluster\_enabled) | (Optional) Should this Kubernetes Cluster have its API server only exposed on internal IP addresses? | `bool` | `null` | no |
 | <a name="input_private_cluster_public_fqdn_enabled"></a> [private\_cluster\_public\_fqdn\_enabled](#input\_private\_cluster\_public\_fqdn\_enabled) | (optional)  Specifies whether a Public FQDN for this Private Cluster should be added. | `bool` | `null` | no |
 | <a name="input_private_dns_zone_id"></a> [private\_dns\_zone\_id](#input\_private\_dns\_zone\_id) | (Optional) Either the ID of Private DNS Zone which should be delegated to this Cluster, System to have AKS manage this or None, see https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/kubernetes_cluster#private_dns_zone_id | `string` | `null` | no |
-| <a name="input_public_network_access_enabled"></a> [public\_network\_access\_enabled](#input\_public\_network\_access\_enabled) | (Optional) Whether public network access is allowed for this Kubernetes Cluster. | `bool` | `null` | no |
 | <a name="input_role_based_access_control_enabled"></a> [role\_based\_access\_control\_enabled](#input\_role\_based\_access\_control\_enabled) | (Optional) - Whether Role Based Access Control for the Kubernetes Cluster should be enabled. | `bool` | `true` | no |
 | <a name="input_run_command_enabled"></a> [run\_command\_enabled](#input\_run\_command\_enabled) | (Optional) Whether to enable run command for the cluster or not? | `bool` | `true` | no |
 | <a name="input_service_cidr"></a> [service\_cidr](#input\_service\_cidr) | (Optional) The Network Range used by the Kubernetes service. | `string` | `null` | no |
