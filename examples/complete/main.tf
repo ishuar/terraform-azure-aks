@@ -26,7 +26,7 @@ module "complete" {
 
   ## Identity
   identity_type                              = "UserAssigned"
-  identity_ids                               = [azurerm_user_assigned_identity.aks.id, azurerm_user_assigned_identity.kubelet.id]
+  identity_ids                               = [azurerm_user_assigned_identity.aks.id]
   kubelet_identity_enabled                   = true
   kubelet_identity_user_assigned_identity_id = azurerm_user_assigned_identity.kubelet.id
   kubelet_identity_client_id                 = azurerm_user_assigned_identity.kubelet.client_id
