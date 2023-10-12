@@ -34,6 +34,7 @@ jobs:
             if [[ -d "$dir" ]]; then
               echo "$dir"
               cd "$dir" || exit
+              terraform init
               terraform validate
               cd "${CURRENT_DIR}" || exit
             fi
