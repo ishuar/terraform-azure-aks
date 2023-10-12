@@ -1,6 +1,6 @@
 ## Update complete example with new features
 
-run "flux_enabled" {
+run "complete" {
   module {
     source = "../examples/complete/"
   }
