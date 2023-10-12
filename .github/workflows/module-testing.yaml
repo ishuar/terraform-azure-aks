@@ -1,0 +1,46 @@
+name: Module Testing
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '**/*.tf'            ## trigger if any terraform file has ben modified.
+      - 'tests/*.tftest.hcl' ## trigger if any test has been modified.
+      - 'scripts/*.sh'       ## trigger if any involved script has been modified.
+
+concurrency:
+  group: testing
+
+jobs:
+  moduleTesting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.6
+
+      - name: Azure Login
+        uses: Azure/login@v1
+        with:
+          creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}"}'
+
+      ## Static Analysis and Linting Test (Unit Testing)
+      - name: Terraform validate on all examples
+        run: |
+          CURRENT_DIR="$(pwd)"
+          for dir in ./examples/*; do
+            if [[ -d "$dir" ]]; then
+              echo "$dir"
+              cd "$dir" || exit
+              terraform validate
+              cd "${CURRENT_DIR}" || exit
+            fi
+          done
+
+      ## Integrating testing using terraform native testing
+      - name: Testing all examples
+        working-directory: "${{ github.workspace }}/tests"
+        run: |
+          terraform init
+          terraform test
