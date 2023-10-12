@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "aks" {
-  name     = "rg-${local.tags["example"]}"
+  name     = "rg-${local.tags["example"]}-cluster-example"
   location = "West Europe"
   tags     = local.tags
 }
