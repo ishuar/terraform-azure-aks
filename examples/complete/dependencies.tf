@@ -48,15 +48,6 @@ resource "azurerm_dns_zone" "k8s_learndevops_in" {
 
 data "azurerm_client_config" "current" {}
 
-resource "azuread_group" "aks_cluster_admins" {
-  display_name     = "aks-${local.tags["example"]}-cluster-admins"
-  owners           = [data.azurerm_client_config.current.object_id]
-  security_enabled = true
-  members = [
-    data.azurerm_client_config.current.object_id,
-  ]
-}
-
 resource "azurerm_user_assigned_identity" "aks" {
   name                = "id-aks-${local.tags["example"]}-example-cluster"
   resource_group_name = azurerm_resource_group.aks.name
@@ -88,7 +79,7 @@ resource "random_string" "random" {
 }
 
 resource "azurerm_storage_account" "aks" {
-  name                     = "strakscomp-${random_string.random.result}"
+  name                     = "strakscomp${random_string.random.result}"
   location                 = azurerm_resource_group.aks.location
   resource_group_name      = azurerm_resource_group.aks.name
   account_tier             = "Standard"

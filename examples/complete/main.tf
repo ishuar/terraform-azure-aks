@@ -26,9 +26,11 @@ module "complete" {
 
   ## Identity
   identity_type                              = "UserAssigned"
-  identity_ids                               = [azurerm_user_assigned_identity.aks.id]
+  identity_ids                               = [azurerm_user_assigned_identity.aks.id, azurerm_user_assigned_identity.kubelet.id]
   kubelet_identity_enabled                   = true
   kubelet_identity_user_assigned_identity_id = azurerm_user_assigned_identity.kubelet.id
+  kubelet_identity_client_id                 = azurerm_user_assigned_identity.kubelet.client_id
+  kubelet_identity_object_id                 = azurerm_user_assigned_identity.kubelet.principal_id
 
   ## Default node pool
   default_node_pool_name                = "system"
@@ -79,7 +81,7 @@ module "complete" {
   aad_rbac_enabled                 = true ## Enable the feature for Azure RBAC with AKS
   aad_rbac_managed                 = true ## Manged RBAC
   aad_azure_rbac_enabled           = true ## Azure AAD and Azure RBAC ( No K8s RBAC )
-  aad_rbac_managed_admin_group_ids = [azuread_group.aks_cluster_admins.object_id]
+  aad_rbac_managed_admin_group_ids = []   ## require permissions to create groups , empty good for testing
 
   ## Workload Identity
   workload_identity_enabled = true
