@@ -38,6 +38,17 @@ module "complete" {
   default_node_pool_max_count           = 2
   default_node_pool_max_pods            = 110
 
+  ## additional_node_pools
+  additional_node_pools = {
+    "nodepool-01" = {
+      vm_size             = "standard_d2ds_v5"
+      enable_auto_scaling = true
+      max_count           = 2
+      min_count           = 1
+      max_pods            = 110
+    }
+  }
+
   ## Api service access profile
   enable_api_server_access_profile    = true
   vnet_integration_enabled            = true

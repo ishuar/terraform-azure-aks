@@ -77,5 +77,9 @@ Examples are availabe in `examples` directory.
 
 - [simple](/examples/simple)
 - [flux-enabled-aks](/example/flux-enabled-aks)
+- [complete](/example/complete)
 
 ## Submodule
+
+
+**⭐️ Don't forget to give the project a star! Thanks again! ⭐️**
