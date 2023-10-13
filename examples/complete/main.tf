@@ -67,14 +67,10 @@ module "complete" {
   # ebpf_data_plane     = "cilium"
 
   ## Monitor Diagnostics Settings
-  enable_cluster_log_monitor_diagnostic  = true
-  monitor_diagnostic_storage_account_id  = azurerm_storage_account.aks.id
-  enable_cluster_all_category_group_log  = true
-  enable_cluster_log_retention_policy    = true
-  cluster_log_retention_policy_days      = "7"
-  enable_cluster_all_metrics             = true
-  enable_cluster_metric_retention_policy = true
-  cluster_metric_retention_policy_days   = "7"
+  enable_cluster_log_monitor_diagnostic = true
+  monitor_diagnostic_storage_account_id = azurerm_storage_account.aks.id
+  enable_cluster_all_category_group_log = true
+  enable_cluster_all_metrics            = true
 
   ## Azure Active Directory
   local_account_disabled           = true

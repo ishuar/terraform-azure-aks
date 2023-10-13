@@ -67,6 +67,19 @@ resource "azurerm_role_assignment" "aks_mi_network_contributor" {
   principal_id         = azurerm_user_assigned_identity.aks.principal_id
 }
 
+
+/*
+* See https://learn.microsoft.com/en-us/azure/aks/use-managed-identity#add-role-assignment"
+* "The cluster using user-assigned managed identity must be granted 'Managed Identity Operator' role to assign kubelet identity.
+* You can run 'az role assignment create --assignee <control-plane-identity-principal-id> --role 'Managed Identity Operator' --scope <kubelet-identity-resource-id>' to grant the permission.
+*/
+
+resource "azurerm_role_assignment" "kubelet_operator" {
+  scope                = azurerm_user_assigned_identity.kubelet.id
+  role_definition_name = "Managed Identity Operator"
+  principal_id         = azurerm_user_assigned_identity.aks.principal_id
+}
+
 ###########
 ## Storage
 ###########
