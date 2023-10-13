@@ -25,6 +25,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - A complete example is added for the module at [examples/complete](./examples/complete).
 - Updated Docs
+
+### Removed
+- Removed `retention_policy` block from `azurerm_monitor_diagnostic_setting` resource as it has been deprecated and not supported anymore.
+  - Following variables are removed and not available in module anymore.
+    - `enable_cluster_log_retention_policy`
+    - `cluster_log_retention_policy_days`
+    - `enable_cluster_metric_retention_policy`
+    - `cluster_metric_retention_policy_days`
+
 ### Others
 
 - Added automated testing for module via github actions.
