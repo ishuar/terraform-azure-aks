@@ -709,54 +709,54 @@ variable "key_data" {
 
 variable "enable_cluster_log_monitor_diagnostic" {
   type        = bool
-  description = "(optional) Whether to enable the log monitor diagnostic for flexible postgresql server or not?"
+  description = "(optional) Whether to enable the log monitor diagnostic for Azure Kubernetes cluster or not?"
   default     = false
 }
 
 variable "enable_cluster_all_category_group_log" {
   type        = bool
-  description = "(optional) Whether to enable all category group log for flexible postgresql cluster or not?"
+  description = "(optional) Whether to enable all category group log for Azure Kubernetes cluster or not?"
   default     = false
 }
 
 variable "enable_cluster_audit_category_group_log" {
   type        = string
-  description = "(optional) Whether to enable only audit category group log for flexible postgresql cluster or not?"
+  description = "(optional) Whether to enable only audit category group log for Azure Kubernetes cluster or not?"
   default     = true
 }
 
 variable "enable_cluster_custom_categories_log" {
   type        = string
-  description = "(optional) Whether to enable custom categories log for flexible postgresql cluster or not?"
+  description = "(optional) Whether to enable custom categories log for Azure Kubernetes cluster or not?"
   default     = false
 }
 
 variable "enable_cluster_log_retention_policy" {
   type        = bool
-  description = "(optional) Whether to enable log retention policy for flexible postgresql cluster or not?"
-  default     = true
+  description = "(optional) Whether to enable log retention policy for Azure Kubernetes cluster or not?"
+  default     = false
 }
 variable "cluster_log_retention_policy_days" {
   type        = string
-  description = "(optional) The number of days for which this Retention Policy should apply for logs for flexible postgresql cluster."
+  description = "(optional) The number of days for which this Retention Policy should apply for logs for Azure Kubernetes cluster."
   default     = 30
 }
 
 variable "enable_cluster_all_metrics" {
   type        = bool
-  description = "(optional) Whether to enable all metrics for diagnostics for flexible postgresql cluster or not?"
+  description = "(optional) Whether to enable all metrics for diagnostics for Azure Kubernetes cluster or not?"
   default     = false
 }
 
 variable "enable_cluster_metric_retention_policy" {
   type        = string
-  description = "(optional) Whether to enable metric retention policy for flexible postgresql cluster or not?"
-  default     = true
+  description = "(optional) Whether to enable metric retention policy for Azure Kubernetes cluster or not?"
+  default     = false
 }
 
 variable "cluster_metric_retention_policy_days" {
   type        = string
-  description = "(optional) The number of days for which this Retention Policy should apply for metrics for flexible postgresql cluster."
+  description = "(optional) The number of days for which this Retention Policy should apply for metrics for Azure Kubernetes cluster."
   default     = 30
 }
 
