@@ -27,10 +27,6 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
     for_each = local.enable_cluster_all_category_group_logs ? data.azurerm_monitor_diagnostic_categories.this[0].log_category_groups : toset([])
     content {
       category_group = enabled_log.value
-      retention_policy {
-        enabled = var.enable_cluster_log_retention_policy
-        days    = var.cluster_log_retention_policy_days
-      }
     }
   }
 
@@ -38,10 +34,6 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
     for_each = local.enable_cluster_custom_categories_log ? ["custom_categories_log"] : []
     content {
       category_group = toset(var.cluster_custom_log_categories)
-      retention_policy {
-        enabled = var.enable_cluster_log_retention_policy
-        days    = var.cluster_log_retention_policy_days
-      }
     }
   }
 
@@ -49,10 +41,6 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
     for_each = var.enable_cluster_audit_category_group_log ? ["audit_category_group_log"] : []
     content {
       category_group = "audit"
-      retention_policy {
-        enabled = var.enable_cluster_log_retention_policy
-        days    = var.cluster_log_retention_policy_days
-      }
     }
   }
 
@@ -61,11 +49,6 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
     content {
       enabled  = var.enable_cluster_all_metrics
       category = "AllMetrics"
-
-      retention_policy {
-        enabled = var.enable_cluster_metric_retention_policy
-        days    = var.cluster_metric_retention_policy_days
-      }
     }
   }
 }
