@@ -2,7 +2,7 @@
 ## Global ########
 variable "existing_aks_cluster" {
   type        = bool
-  description = "(optional) Is there any existing AKS cluster? fake"
+  description = "(optional) Is there any existing AKS cluster?"
   default     = false
 }
 

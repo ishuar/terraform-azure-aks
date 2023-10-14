@@ -53,4 +53,4 @@ jobs:
           comment_tag: documentation
           mode: delete
           message: |
-            **Run make docs from the root of the repository if this check fails**
+            **${{ github.workflow }} failed, Run make docs from the root of the repository to continue**
