@@ -50,8 +50,8 @@ jobs:
         id: testing
         run: |
           terraform init
-          RESULT=$(terraform test)
-          echo $RESULT
+          RESULT="$(terraform-bin test)"
+          # echo "$RESULT"
           echo "result=$RESULT" >> "$GITHUB_OUTPUT"
 
       - name: Comment the Test Result on PR
