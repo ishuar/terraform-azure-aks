@@ -62,8 +62,8 @@ jobs:
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request' && always() && !cancelled()
         env:
-          TEST_OUTPUT: "terraform\n${{ steps.testing.outputs.stdout }}"
-          TEST_ERROR: "terraform\n${{ steps.testing.outputs.stderr }}"
+          TEST_OUTPUT: "${{ steps.testing.outputs.stdout }}"
+          TEST_ERROR: "${{ steps.testing.outputs.stderr }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -78,11 +78,21 @@ jobs:
             })
 
             // 2. Prepare format of the comment
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            const output = `### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
 
-            \`\`\`bash\n
+            // 3. Print the correct result on the formatting
+            const fmt_outcome: string = ${{ steps.fmt.outcome }}
+            const fmt_outcome_error: string = \`
+            ```bash
             ${{ steps.fmt.outputs.stdout }}
-            \`\`\`
+            ```
+            \`;
+
+            if (fmt_outcome === "success") {
+              console.log("Terraform Files are formatted. :check:");
+            } else {
+              console.log(fmt_outcome_error);
+            }
 
             ### :gear: **Testing Results** :gear:\`${{ steps.testing.outcome }}\`
 
@@ -98,9 +108,9 @@ jobs:
             ${process.env.TEST_ERROR}
             \`\`\`
 
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`,Workflow: \`${{ github.workflow }}\`*`;
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
-            // 3. If we have a comment, update it, otherwise create a new one
+            // 4. If we have a comment, update it, otherwise create a new one
             if (botComment) {
               github.rest.issues.updateComment({
                 owner: context.repo.owner,
