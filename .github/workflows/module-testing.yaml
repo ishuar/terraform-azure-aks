@@ -59,12 +59,16 @@ jobs:
         with:
           reactions: rocket
           comment_tag: testing-result
-          message: |
+          message: |-
             ### :gear: **Testing Results** :gear:
-            #### `Standard Output`
-            ${{ steps.testing.outputs.stdout }}
-            #### `Error Message`
+            - `Standard Output`
+              ```bash
+              ${{ steps.testing.outputs.stdout }}
+              ```
+            - `Error Message`
+              ```bash
             ${{ steps.testing.outputs.stderr }}
+              ```
           mode: recreate
 
       # - name: Set up Go
