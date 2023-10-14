@@ -50,11 +50,10 @@ jobs:
         id: testing
         run: |
           terraform init
-          delimiter="$(openssl rand -hex 8)"
           {
-          echo "result<<${delimiter}"
-          terraform test
-          echo "${delimiter}"
+          echo 'result<<EOF'
+          terraform test -no-color
+          echo EOF
           } >> $GITHUB_OUTPUT
 
       - name: Comment the Test Result on PR
@@ -64,7 +63,7 @@ jobs:
           comment_tag: testing-result
           message: |
             :gear: **Testing Result** :gear:
-            "```\n${{ steps.testing.outputs.result }}\n```"
+            "${{ steps.testing.outputs.result }}"
       # - name: Set up Go
       #   uses: actions/setup-go@v4
       #   with:
