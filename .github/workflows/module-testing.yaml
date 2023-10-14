@@ -9,6 +9,8 @@ on:
       - 'tests/*.tftest.hcl'    ## trigger if any test has been modified.
       # - 'tests/*_test.go'       ## trigger if any test has been modified
 
+permissions:
+   pull-requests: write
 
 concurrency:
   group: testing
@@ -43,12 +45,23 @@ jobs:
           done
 
       ## Integrating testing using terraform native testing
-      - name: Testing all examples
+      - name: Testing complete example
         working-directory: "${{ github.workspace }}/tests"
+        id: testing
         run: |
           terraform init
-          terraform test
+          RESULT=$(terraform test)
+          echo $RESULT
+          echo "result=$RESULT" >> "$GITHUB_OUTPUT"
 
+      - name: Comment the Test Result on PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          reactions: rocket
+          comment_tag: testing-result
+          message: |
+            :gear: **Testing Result** :gear:
+            ${{ steps.testing.outputs.result }}
       # - name: Set up Go
       #   uses: actions/setup-go@v4
       #   with:
