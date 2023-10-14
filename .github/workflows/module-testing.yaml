@@ -60,8 +60,8 @@ jobs:
           comment_tag: testing-result
           message: |
             :gear: **Testing Results** :gear:
-            "**STD OUTPUT:** $TEST_STD_OUT"
-            "**ERROR MESSAGE:**$TEST_STD_ERROR"
+            "${{ steps.testing.outputs.stdout }}"
+            "${{ steps.testing.outputs.stderr }}"
           mode: recreate
         env:
           TEST_STD_ERROR: "\n\n${{ steps.testing.outputs.stderr }}"
