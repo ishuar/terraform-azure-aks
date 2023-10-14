@@ -59,12 +59,13 @@ jobs:
           reactions: rocket
           comment_tag: testing-result
           message: |
-            :gear: **Testing Result** :gear:
-            printf "\n${{ steps.testing.outputs.stdout }}\n"
-            printf "**ERROR MESSAGE:**\n\n$TEST_STD_ERROR"
-          mode: delete
+            :gear: **Testing Results** :gear:
+            "**STD OUTPUT:** $TEST_STD_OUT"
+            "**ERROR MESSAGE:**$TEST_STD_ERROR"
+          mode: recreate
         env:
-          TEST_STD_ERROR: "\n${{ steps.testing.outputs.stderr }}"
+          TEST_STD_ERROR: "\n\n${{ steps.testing.outputs.stderr }}"
+          TEST_STD_OUT: "\n\n${{ steps.testing.outputs.stdout }}"
 
       # - name: Set up Go
       #   uses: actions/setup-go@v4
