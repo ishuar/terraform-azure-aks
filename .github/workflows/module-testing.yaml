@@ -59,13 +59,12 @@ jobs:
           reactions: rocket
           comment_tag: testing-result
           message: |
-            :gear: **Testing Results** :gear:
-            "${{ steps.testing.outputs.stdout }}"
-            "${{ steps.testing.outputs.stderr }}"
+            ### :gear: **Testing Results** :gear:
+            #### :outbox_tray: Standard Output :outbox_tray:
+            ${{ steps.testing.outputs.stdout }}
+            #### :hammer: Error Message :hammer:
+            ${{ steps.testing.outputs.stderr }}
           mode: recreate
-        env:
-          TEST_STD_ERROR: "\n\n${{ steps.testing.outputs.stderr }}"
-          TEST_STD_OUT: "\n\n${{ steps.testing.outputs.stdout }}"
 
       # - name: Set up Go
       #   uses: actions/setup-go@v4
