@@ -43,7 +43,7 @@ jobs:
           message: |
             **Run make docs from the root of the repository if this check fails**
 
-      - name: Comment on the PR if Readme is not upated.
+      - name: Delete Comment on the PR if Readme is upated.
         if: ${{ always() && steps.docs.conclusion == 'success' && !cancelled() }}
         uses: thollander/actions-comment-pull-request@v2
         with:
@@ -51,3 +51,4 @@ jobs:
           comment_tag: documentation
           mode: delete
           message: |
+            **Run make docs from the root of the repository if this check fails**
