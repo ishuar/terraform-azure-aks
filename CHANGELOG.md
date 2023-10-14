@@ -27,7 +27,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Updated Docs
 
 ### Removed
-- Removed `retention_policy` block from `azurerm_monitor_diagnostic_setting` resource as it has been deprecated and not supported anymore.
+
+- Removed `retention_policy` block from `azurerm_monitor_diagnostic_setting` resource as it has been deprecated and not supported anymore. Please use [azurerm_storage_management_policy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_management_policy) resource for lifecycle management for retention.
+****
   - Following variables are removed and not available in module anymore.
     - `enable_cluster_log_retention_policy`
     - `cluster_log_retention_policy_days`

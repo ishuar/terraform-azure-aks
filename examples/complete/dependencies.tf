@@ -1,7 +1,6 @@
 ###########
 ## Network
 ###########
-
 resource "azurerm_virtual_network" "aks" {
   name                = "vnet-${local.tags["example"]}-aks-cluster"
   address_space       = ["10.0.0.0/16"]
@@ -66,7 +65,6 @@ resource "azurerm_role_assignment" "aks_mi_network_contributor" {
   role_definition_name = "Network Contributor"
   principal_id         = azurerm_user_assigned_identity.aks.principal_id
 }
-
 
 /*
 * See https://learn.microsoft.com/en-us/azure/aks/use-managed-identity#add-role-assignment"

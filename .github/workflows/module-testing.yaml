@@ -4,9 +4,11 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - '**/*.tf'            ## trigger if any terraform file has ben modified.
-      - 'tests/*.tftest.hcl' ## trigger if any test has been modified.
-      - 'scripts/*.sh'       ## trigger if any involved script has been modified.
+      - '**/*.tf'               ## trigger if any terraform file has ben modified.
+      - 'scripts/*.sh'          ## trigger if any involved script has been modified.
+      - 'tests/*.tftest.hcl'    ## trigger if any test has been modified.
+      # - 'tests/*_test.go'       ## trigger if any test has been modified
+
 
 concurrency:
   group: testing
@@ -46,3 +48,13 @@ jobs:
         run: |
           terraform init
           terraform test
+
+      # - name: Set up Go
+      #   uses: actions/setup-go@v4
+      #   with:
+      #     go-version: '1.21.x'
+      #     cache: false
+
+      # - name: Testing examples with Terratest
+      #   run: go test -v -timeout=60m
+      #   working-directory: "${{ github.workspace }}/tests"

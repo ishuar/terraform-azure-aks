@@ -1,4 +1,3 @@
-
 ## Monitor Diagnostic Setting Locals
 locals {
   all_true_cluster                        = var.enable_cluster_all_category_group_log && var.enable_cluster_audit_category_group_log && var.enable_cluster_custom_categories_log
