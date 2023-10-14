@@ -31,12 +31,6 @@ jobs:
           terraform_version: 1.6
           terraform_wrapper: true
 
-      - name: Terraform fmt
-        id: fmt
-        run: terraform fmt -recursive -check -diff
-        continue-on-error: true
-        working-directory: "${{ github.workspace }}"
-
       ## Static Analysis and Linting Test (Unit Testing)
       - name: Terraform validate on all examples
         run: |
@@ -74,17 +68,10 @@ jobs:
               issue_number: context.issue.number,
             })
             const botComment = comments.find(comment => {
-              return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
+              return comment.user.type === 'Bot' && comment.body.includes('Test Results')
             })
 
-            // 2. Prepare format of the comment
-            const output = `### Terraform Format and Style  🖌\`${{ steps.fmt.outcome }}\`
-
-            \`\`\`hcl\n
-            ${{ steps.fmt.outputs.stdout }}
-            \`\`\`
-
-            ### :gear: **Test Results** :gear: \`${{ steps.testing.outcome }}\`
+            ### Test Results :gear: Status: \`${{ steps.testing.outcome }}\`
 
             - \`Test Output:\`
 
@@ -117,32 +104,3 @@ jobs:
               })
             }
 
-      # - name: Comment the Test Result on PR
-      #   if: ${{ always() &&  !cancelled() }}
-      #   uses: thollander/actions-comment-pull-request@v2
-      #   with:
-      #     reactions: rocket
-      #     comment_tag: testing-result
-      #     mode: recreate
-      #     message: |
-      #       ### :gear: **Testing Results** :gear:
-      #       - `Standard Output`
-
-      #       ```bash
-      #       ${{ steps.testing.outputs.stdout }}
-      #       ```
-      #       - `Error Message`
-
-      #       ```bash
-      #       ${{ steps.testing.outputs.stderr }}
-      #       ```
-
-      # - name: Set up Go
-      #   uses: actions/setup-go@v4
-      #   with:
-      #     go-version: '1.21.x'
-      #     cache: false
-
-      # - name: Testing examples with Terratest
-      #   run: go test -v -timeout=60m
-      #   working-directory: "${{ github.workspace }}/tests"

@@ -27,6 +27,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check terraform formatt
+        uses: dflook/terraform-fmt-check@v1
+        with:
+          path: "${{ github.workspace }}"
+
       - name: Render and check diff on Readme with Terraform Changes
         id: docs
         run: |
