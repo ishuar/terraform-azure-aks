@@ -739,7 +739,7 @@ variable "enable_cluster_all_metrics" {
 
 variable "cluster_custom_log_categories" {
   type        = list(string)
-  description = "(optional) A list of strings with supported category groups for postgresql cluster log monitoring diagnostics"
+  description = "(optional) A list of strings with supported category groups for Azure Kubernetes cluster log monitoring diagnostics"
   default     = []
 }
 variable "monitor_diagnostic_storage_account_id" {
