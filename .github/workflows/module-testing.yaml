@@ -7,7 +7,6 @@ on:
       - '**/*.tf'               ## trigger if any terraform file has ben modified.
       - 'scripts/*.sh'          ## trigger if any involved script has been modified.
       - 'tests/*.tftest.hcl'    ## trigger if any test has been modified.
-      # - 'tests/*_test.go'       ## trigger if any test has been modified
 
 permissions:
    pull-requests: write
@@ -70,8 +69,7 @@ jobs:
             const botComment = comments.find(comment => {
               return comment.user.type === 'Bot' && comment.body.includes('Test Results')
             })
-
-            ### Test Results :gear: Status: \`${{ steps.testing.outcome }}\`
+            const output = `### Test Results :gear: Status: \`${{ steps.testing.outcome }}\`
 
             - \`Test Output:\`
 
@@ -103,4 +101,3 @@ jobs:
                 body: output
               })
             }
-
