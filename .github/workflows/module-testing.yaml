@@ -29,6 +29,7 @@ jobs:
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.6
+          terraform_wrapper: true
 
       ## Static Analysis and Linting Test (Unit Testing)
       - name: Terraform validate on all examples
@@ -50,11 +51,7 @@ jobs:
         id: testing
         run: |
           terraform init
-          {
-          echo 'result<<EOF'
           terraform test -no-color
-          echo EOF
-          } >> $GITHUB_OUTPUT
 
       - name: Comment the Test Result on PR
         uses: thollander/actions-comment-pull-request@v2
@@ -63,7 +60,12 @@ jobs:
           comment_tag: testing-result
           message: |
             :gear: **Testing Result** :gear:
-            "${{ steps.testing.outputs.result }}"
+            printf "\n${{ steps.testing.outputs.stdout }}\n"
+            printf "**ERROR MESSAGE:**\n\n$TEST_STD_ERROR"
+          mode: delete
+        env:
+          TEST_STD_ERROR: "\n${{ steps.testing.outputs.stderr }}"
+
       # - name: Set up Go
       #   uses: actions/setup-go@v4
       #   with:
