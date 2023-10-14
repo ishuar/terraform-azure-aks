@@ -81,17 +81,17 @@ jobs:
             const output = `### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
 
             // 3. Print the correct result on the formatting
-            const fmt_outcome: string = ${{ steps.fmt.outcome }}
-            const fmt_outcome_error: string = \`
-            ```bash
+            const fmtOutcome: string = ${{ steps.fmt.outcome }}
+            const fmtOutcomeError: string = `
+            \`\`\`bash\n
             ${{ steps.fmt.outputs.stdout }}
-            ```
-            \`;
+            \`\`\`
+            `;
 
-            if (fmt_outcome === "success") {
-              console.log("Terraform Files are formatted. :check:");
+            if (fmtOutcome === "success") {
+              console.log("Terraform Files are formatted. :check: ");
             } else {
-              console.log(fmt_outcome_error);
+              console.log(fmtOutcomeError);
             }
 
             ### :gear: **Testing Results** :gear:\`${{ steps.testing.outcome }}\`
