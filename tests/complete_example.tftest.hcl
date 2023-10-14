@@ -2,6 +2,6 @@
 
 run "complete" {
   module {
-    source = "../examples/rg/"
+    source = "../examples/complete/"
   }
 }
