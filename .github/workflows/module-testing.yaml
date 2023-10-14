@@ -4,9 +4,11 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - '**/*.tf'               ## trigger if any terraform file has ben modified.
-      - 'scripts/*.sh'          ## trigger if any involved script has been modified.
-      - 'tests/*.tftest.hcl'    ## trigger if any test has been modified.
+      - './*.tf'                                ## trigger if any terraform file has ben modified in repo root.
+      - 'scripts/*.sh'                          ## trigger if any involved script has been modified.
+      - 'tests/*.tftest.hcl'                    ## trigger if any test has been modified.
+      - 'examples/complete/*.tf'                ## trigger if complete example has been modified.
+      - '.github/workflows/module-testing.yaml' ## trigger if this workflow has been modified.
 
 permissions:
    pull-requests: write
@@ -69,6 +71,7 @@ jobs:
             const botComment = comments.find(comment => {
               return comment.user.type === 'Bot' && comment.body.includes('Test Results')
             })
+            // 2. Set output data
             const output = `### Test Results :gear: Status: \`${{ steps.testing.outcome }}\`
 
             - \`Test Output:\`
@@ -85,7 +88,7 @@ jobs:
 
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
-            // 4. If we have a comment, update it, otherwise create a new one
+            // 3. If we have a comment, update it, otherwise create a new one
             if (botComment) {
               github.rest.issues.updateComment({
                 owner: context.repo.owner,
