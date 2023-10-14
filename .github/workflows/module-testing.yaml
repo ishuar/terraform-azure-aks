@@ -74,35 +74,25 @@ jobs:
               issue_number: context.issue.number,
             })
             const botComment = comments.find(comment => {
-              return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
+              return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style:')
             })
 
             // 2. Prepare format of the comment
-            const output = `### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            const output = `### Terraform Format and Style:  🖌\`${{ steps.fmt.outcome }}\`
 
-            // 3. Print the correct result on the formatting
-            const fmtOutcome: string = ${{ steps.fmt.outcome }}
-            const fmtOutcomeError: string = `
-            \`\`\`bash\n
+            \`\`\`hcl\n
             ${{ steps.fmt.outputs.stdout }}
             \`\`\`
-            `;
 
-            if (fmtOutcome === "success") {
-              console.log("Terraform Files are formatted. :check: ");
-            } else {
-              console.log(fmtOutcomeError);
-            }
+            ### :gear: **Test Results** :gear:\`: ${{ steps.testing.outcome }}\`
 
-            ### :gear: **Testing Results** :gear:\`${{ steps.testing.outcome }}\`
-
-            - \`TEST OUTPUT:\`
+            - \`Test Output:\`
 
             \`\`\`bash\n
             ${process.env.TEST_OUTPUT}
             \`\`\`
 
-            - \`TEST ERROR MESSAGE:\`
+            - \`Test Error Message:\`
 
             \`\`\`bash\n
             ${process.env.TEST_ERROR}

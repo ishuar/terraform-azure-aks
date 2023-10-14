@@ -25,16 +25,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Check terraform formatt
-        uses: dflook/terraform-fmt-check@v1
-        with:
-          path: "${{ github.workspace }}"
-
       - name: Render and check diff on Readme with Terraform Changes
+        id: docs
         run: |
           curl -sSfL https://github.com/terraform-docs/terraform-docs/releases/download/v0.16.0/terraform-docs-v0.16.0-linux-amd64.tar.gz | tar xzf - terraform-docs
           chmod +x terraform-docs
           ./terraform-docs --config "${{ github.workspace }}/.config/.terraform-docs.yml" .
-          echo "**Run make docs from the root of the repository if this check fails**"
           git diff --exit-code
 
+      - name: Comment on the PR if Readme is not upated.
+        if: failure() && !cancelled()
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          reactions: eyes
+          comment_tag: documentation
+          mode: recreate
+          message: |
+            **Run make docs from the root of the repository if this check fails**
+
+      - name: Comment on the PR if Readme is not upated.
+        if: ${{ always() && steps.docs.conclusion == 'success' && !cancelled() }}
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          reactions: eyes
+          comment_tag: documentation
+          mode: delete
+          message: |
