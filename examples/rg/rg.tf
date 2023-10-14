@@ -13,5 +13,5 @@ provider "azurerm" {
 
 resource "azurerm_resource_group" "rg" {
   name     = "rg-aks-module-test-euw"
-  location = "West Europe"
+  location = "West East"
 }
