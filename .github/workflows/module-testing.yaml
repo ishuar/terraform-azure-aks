@@ -31,6 +31,12 @@ jobs:
           terraform_version: 1.6
           terraform_wrapper: true
 
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -recursive -check -diff
+        continue-on-error: true
+        working-directory: "${{ github.workspace }}"
+
       ## Static Analysis and Linting Test (Unit Testing)
       - name: Terraform validate on all examples
         run: |
@@ -53,25 +59,83 @@ jobs:
           terraform init
           terraform test -no-color
 
-      - name: Comment the Test Result on PR
-        if: ${{ always() &&  !cancelled() }}
-        uses: thollander/actions-comment-pull-request@v2
+      - uses: actions/github-script@v6
+        if: github.event_name == 'pull_request' && always() && !cancelled()
+        env:
+          TEST_OUTPUT: "terraform\n${{ steps.testing.outputs.stdout }}"
+          TEST_ERROR: "terraform\n${{ steps.testing.outputs.stderr }}"
         with:
-          reactions: rocket
-          comment_tag: testing-result
-          mode: recreate
-          message: |
-            ### :gear: **Testing Results** :gear:
-            - `Standard Output`
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // 1. Retrieve existing bot comments for the PR
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            })
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
+            })
 
-              ```bash
-              ${{ steps.testing.outputs.stdout }}
-              ```
-            - `Error Message`
+            // 2. Prepare format of the comment
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
 
-              ```bash
-            ${{ steps.testing.outputs.stderr }}
-              ```
+            \`\`\`bash\n
+            ${{ steps.fmt.outputs.stdout }}
+            \`\`\`
+
+            ### :gear: **Testing Results** :gear:\`${{ steps.testing.outcome }}\`
+
+            - \`TEST OUTPUT:\`
+
+            \`\`\`bash\n
+            ${process.env.TEST_OUTPUT}
+            \`\`\`
+
+            - \`TEST ERROR MESSAGE:\`
+
+            \`\`\`bash\n
+            ${process.env.TEST_ERROR}
+            \`\`\`
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`,Workflow: \`${{ github.workflow }}\`*`;
+
+            // 3. If we have a comment, update it, otherwise create a new one
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: output
+              })
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            }
+
+      # - name: Comment the Test Result on PR
+      #   if: ${{ always() &&  !cancelled() }}
+      #   uses: thollander/actions-comment-pull-request@v2
+      #   with:
+      #     reactions: rocket
+      #     comment_tag: testing-result
+      #     mode: recreate
+      #     message: |
+      #       ### :gear: **Testing Results** :gear:
+      #       - `Standard Output`
+
+      #       ```bash
+      #       ${{ steps.testing.outputs.stdout }}
+      #       ```
+      #       - `Error Message`
+
+      #       ```bash
+      #       ${{ steps.testing.outputs.stderr }}
+      #       ```
 
       # - name: Set up Go
       #   uses: actions/setup-go@v4
