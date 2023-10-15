@@ -75,8 +75,8 @@ module "aks" {
 Examples are availabe in `examples` directory.
 
 - [simple](/examples/simple)
-- [flux-enabled-aks](/example/flux-enabled-aks)
-- [complete](/example/complete)
+- [flux-enabled-aks](/examples/flux-enabled-aks)
+- [complete](/examples/complete)
 
 ## Submodule
 

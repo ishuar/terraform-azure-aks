@@ -48,7 +48,7 @@ jobs:
           comment_tag: documentation
           mode: recreate
           message: |
-            **Run make docs from the root of the repository if this check fails**
+            **${{ github.workflow }} failed, Run make docs from the root of the repository to continue**
 
       - name: Delete Comment on the PR if Readme is upated.
         if: ${{ always() && steps.docs.conclusion == 'success' && !cancelled() }}
