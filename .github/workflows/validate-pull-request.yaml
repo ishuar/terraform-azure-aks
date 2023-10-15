@@ -10,6 +10,8 @@ on:
       - reopened
       - ready_for_review
 
+permissions:
+   pull-requests: write
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -31,10 +33,29 @@ jobs:
           path: "${{ github.workspace }}"
 
       - name: Render and check diff on Readme with Terraform Changes
+        id: docs
         run: |
           curl -sSfL https://github.com/terraform-docs/terraform-docs/releases/download/v0.16.0/terraform-docs-v0.16.0-linux-amd64.tar.gz | tar xzf - terraform-docs
           chmod +x terraform-docs
           ./terraform-docs --config "${{ github.workspace }}/.config/.terraform-docs.yml" .
-          echo "**Run make docs from the root of the repository if this check fails**"
           git diff --exit-code
 
+      - name: Comment on the PR if Readme is not upated.
+        if: failure() && !cancelled()
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          reactions: eyes
+          comment_tag: documentation
+          mode: recreate
+          message: |
+            **${{ github.workflow }} failed, Run make docs from the root of the repository to continue**
+
+      - name: Delete Comment on the PR if Readme is upated.
+        if: ${{ always() && steps.docs.conclusion == 'success' && !cancelled() }}
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          reactions: eyes
+          comment_tag: documentation
+          mode: delete
+          message: |
+            **${{ github.workflow }} failed, Run make docs from the root of the repository to continue**

@@ -20,6 +20,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 > **INFO:** This file is only maintained after `v2.0.0` due to no initial availability , please refer to release notes for versions equal or older than `v2.0.0`.
 
+## v2.2.0
+### Added
+
+- A complete example is added for the module at [examples/complete](./examples/complete).
+- Updated Docs
+
+### Removed
+
+- Removed `retention_policy` block from `azurerm_monitor_diagnostic_setting` resource as it has been deprecated and not supported anymore. Please use [azurerm_storage_management_policy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_management_policy) resource for lifecycle management for retention.
+****
+  - Following variables are removed and not available in module anymore.
+    - `enable_cluster_log_retention_policy`
+    - `cluster_log_retention_policy_days`
+    - `enable_cluster_metric_retention_policy`
+    - `cluster_metric_retention_policy_days`
+
+### Others
+
+- Added automated testing for module via github actions.
+  - Syntax/Static testing using `terraform validate`
+  - Integration/working testing using `terraform test`
+
 ## v2.1.0
 ### Added
 

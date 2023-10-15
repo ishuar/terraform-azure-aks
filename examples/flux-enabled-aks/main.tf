@@ -12,7 +12,7 @@ module "ssh_key_generator" {
 
 ## FluxCD enabled Azure Kubernetes Cluster
 ## ? ref : https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2?tabs=azure-cli#for-azure-kubernetes-service-clusters
-module "aks" {
+module "aks_flux_extension" {
   source = "../../"
 
   location                     = azurerm_resource_group.aks_rg.location

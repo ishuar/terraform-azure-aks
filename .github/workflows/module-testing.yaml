@@ -1,0 +1,106 @@
+name: Module Testing
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - './*.tf'                                ## trigger if any terraform file has ben modified in repo root.
+      - 'scripts/*.sh'                          ## trigger if any involved script has been modified.
+      - 'tests/*.tftest.hcl'                    ## trigger if any test has been modified.
+      - 'examples/complete/*.tf'                ## trigger if complete example has been modified.
+      - '.github/workflows/module-testing.yaml' ## trigger if this workflow has been modified.
+
+permissions:
+   pull-requests: write
+
+concurrency:
+  group: testing
+
+jobs:
+  moduleTesting:
+    runs-on: ubuntu-latest
+    env:
+      ARM_SUBSCRIPTION_ID: "${{ vars.ARM_SUBSCRIPTION_ID }}"
+      ARM_CLIENT_ID: "${{ secrets.AZURE_CLIENT_ID }}"
+      ARM_CLIENT_SECRET: "${{ secrets.AZURE_CLIENT_SECRET }}"
+      ARM_TENANT_ID: "${{ secrets.AZURE_TENANT_ID}}"
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.6
+          terraform_wrapper: true
+
+      ## Static Analysis and Linting Test (Unit Testing)
+      - name: Terraform validate on all examples
+        run: |
+          CURRENT_DIR="$(pwd)"
+          for dir in ./examples/*; do
+            if [[ -d "$dir" ]]; then
+              echo "$dir"
+              cd "$dir" || exit
+              terraform init
+              terraform validate
+              cd "${CURRENT_DIR}" || exit
+            fi
+          done
+
+      ## Integrating testing using terraform native testing
+      - name: Testing complete example
+        working-directory: "${{ github.workspace }}/tests"
+        id: testing
+        run: |
+          terraform init
+          terraform test -no-color
+
+      - uses: actions/github-script@v6
+        if: github.event_name == 'pull_request' && always() && !cancelled()
+        env:
+          TEST_OUTPUT: "${{ steps.testing.outputs.stdout }}"
+          TEST_ERROR: "${{ steps.testing.outputs.stderr }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // 1. Retrieve existing bot comments for the PR
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            })
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Test Results')
+            })
+            // 2. Set output data
+            const output = `### Test Results :gear: Status: \`${{ steps.testing.outcome }}\`
+
+            - \`Test Output:\`
+
+            \`\`\`bash\n
+            ${process.env.TEST_OUTPUT}
+            \`\`\`
+
+            - \`Test Error Message:\`
+
+            \`\`\`bash\n
+            ${process.env.TEST_ERROR}
+            \`\`\`
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+            // 3. If we have a comment, update it, otherwise create a new one
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: output
+              })
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            }
