@@ -59,7 +59,7 @@ resource "azurerm_resource_group" "aks_rg" {
 
 module "aks" {
   source  = "ishuar/aks/azure"
-  version = "~> 2.1"
+  version = "~> 2.2"
 
   location                     = azurerm_resource_group.aks_rg.name
   resource_group_name          = azurerm_resource_group.aks_rg.location
