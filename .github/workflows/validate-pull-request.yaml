@@ -16,14 +16,6 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: mheap/github-action-required-labels@v5
-        name: Check Correct Labeling on Pull request
-        with:
-          mode: exactly
-          count: 1
-          labels: "breaking-change,enhancement,bug,chore,documentation,github-actions"
-          add_comment: true
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -32,7 +24,16 @@ jobs:
         with:
           path: "${{ github.workspace }}"
 
+      - uses: mheap/github-action-required-labels@v5
+        name: Check Correct Labeling on Pull request
+        with:
+          mode: exactly
+          count: 1
+          labels: "breaking-change,enhancement,bug,chore,documentation,github-actions"
+          add_comment: true
+
       - name: Render and check diff on Readme with Terraform Changes
+        if: always() && !cancelled()
         id: docs
         run: |
           curl -sSfL https://github.com/terraform-docs/terraform-docs/releases/download/v0.16.0/terraform-docs-v0.16.0-linux-amd64.tar.gz | tar xzf - terraform-docs
