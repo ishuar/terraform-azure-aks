@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 <!--
 ## version
+
+### Breaking
+  - Changes which may cause recreation of cluster or resources.
+
 ### Added
   - Added new feature
 
@@ -16,11 +20,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Others
   - Other changes
+
 -->
 
 > **INFO:** This file is only maintained after `v2.0.0` due to no initial availability , please refer to release notes for versions equal or older than `v2.0.0`.
 
+## v2.3.0
+
+### Added
+
+- Support attribute `temporary_name_for_rotation`  which is used to cycle the default node pool for VM resizing.
+
+- Support attribute `node_pool_type` which is used to define the type of Node Pool which should be created. If `enable_auto_scaling` needs to be true then the `node_pool_type` has to be VirtualMachineScaleSets.
+
+- Preconditons to support early warnings and better usability.
+  - if `workload_identity_enabled` is true  then `oidc_issuer_enabled` has to be true.
+  - if `network_plugin_mode` is overlay then `network_plugin` has to be azure.
+  - if `ebpf_data_plane` is cillium then `network_plugin` has to be azure.
+  - if `ebpf_data_plane` is cillium then either `network_plugin_mode` is overlay or `vnet_subnet_id` not set to null.
+
+### Removed
+
+- Deprecated attribute and variable `docker_bridge_cidr`
+
 ## v2.2.0
+
 ### Added
 
 - A complete example is added for the module at [examples/complete](./examples/complete).
