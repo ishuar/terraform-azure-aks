@@ -219,7 +219,7 @@ resource "azurerm_kubernetes_cluster" "this" {
       error_message = "When ebpf_data_plane is set to cilium, the network_plugin field can only be set to azure."
     }
     precondition {
-      condition     = var.ebpf_data_plane == "cilium" && (var.network_plugin_mode == "overlay" || var.vnet_subnet_id != null)
+      condition     = var.ebpf_data_plane != "cilium" || var.network_plugin_mode == "overlay" || var.vnet_subnet_id != null
       error_message = "When ebpf_data_plane is set to cilium, one of either network_plugin_mode = `overlay` or pod_subnet_id must be specified."
     }
     ## when defender is enabled, a log analytics workspace id must be provided
