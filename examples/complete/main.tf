@@ -43,7 +43,7 @@ module "complete" {
   ##? additional_node_pools
   additional_node_pools = {
     "nodepool01" = {
-      vm_size             = "standard_d2ds_v5"
+      vm_size             = "standard_ds2_v2"
       enable_auto_scaling = true
       max_count           = 2
       min_count           = 1
