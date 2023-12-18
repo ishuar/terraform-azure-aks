@@ -10,6 +10,7 @@ data "azurerm_kubernetes_service_versions" "current" {
   location        = var.location
   include_preview = var.include_preview
 }
+
 locals {
   aks_cluster                      = var.existing_aks_cluster ? data.azurerm_kubernetes_cluster.this[0] : azurerm_kubernetes_cluster.this[0]
   enable_api_server_access_profile = var.api_server_authorized_ip_ranges != null || var.api_server_access_profile_subnet_id != null || var.vnet_integration_enabled
@@ -50,7 +51,6 @@ resource "azurerm_kubernetes_cluster" "this" {
     service_cidr        = var.service_cidr
     service_cidrs       = var.service_cidrs
     dns_service_ip      = var.dns_service_ip
-    docker_bridge_cidr  = var.docker_bridge_cidr
     outbound_type       = var.outbound_type
     ebpf_data_plane     = var.ebpf_data_plane
     network_plugin_mode = var.network_plugin_mode
@@ -104,6 +104,8 @@ resource "azurerm_kubernetes_cluster" "this" {
     proximity_placement_group_id = var.default_node_pool_proximity_placement_group_id
     message_of_the_day           = var.default_node_pool_message_of_the_day
     workload_runtime             = var.default_node_pool_workload_runtime
+    temporary_name_for_rotation  = var.temporary_name_for_rotation
+    type                         = var.node_pool_type
     upgrade_settings {
       max_surge = var.default_node_pool_upgrade_max_surge
     }
@@ -199,7 +201,37 @@ resource "azurerm_kubernetes_cluster" "this" {
       }
     }
   }
+  lifecycle {
+    ignore_changes = [
 
+    ] ##TODO: To avoid conflicts between auto upgrade and terraform
+
+    precondition {
+      condition     = var.workload_identity_enabled && var.oidc_issuer_enabled
+      error_message = "`oidc_issuer_enabled` must be set to `true` to enable Azure AD Workload Identity"
+    }
+    precondition {
+      condition     = var.network_plugin_mode != "overlay" || var.network_plugin == "azure"
+      error_message = "When network_plugin_mode is set to `overlay`, the network_plugin field can only be set to azure."
+    }
+    precondition {
+      condition     = var.ebpf_data_plane != "cilium" || var.network_plugin == "azure"
+      error_message = "When ebpf_data_plane is set to cilium, the network_plugin field can only be set to azure."
+    }
+    precondition {
+      condition     = var.ebpf_data_plane != "cilium" || var.network_plugin_mode == "overlay" || var.vnet_subnet_id != null
+      error_message = "When ebpf_data_plane is set to cilium, one of either network_plugin_mode = `overlay` or pod_subnet_id must be specified."
+    }
+    ## when defender is enabled, a log analytics workspace id must be provided
+    precondition {
+      condition     = !var.enable_microsoft_defender || var.log_analytics_workspace_id != null
+      error_message = "Enabling Microsoft Defender requires a valid log analytics workspace id."
+    }
+    precondition {
+      condition     = var.default_node_pool_enable_auto_scaling != true || var.node_pool_type == "VirtualMachineScaleSets"
+      error_message = "When Auto Scaling is enabled, the default node pool type must be VirtualMachineScaleSets."
+    }
+  }
 }
 
 resource "azurerm_kubernetes_cluster_node_pool" "this" {
@@ -248,5 +280,14 @@ resource "azurerm_kubernetes_cluster_node_pool" "this" {
     var.tags,
     try(each.value["node_pool_tags"], null)
   )
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes = [
+      name
+    ]
+    precondition {
+      condition     = var.node_pool_type == "VirtualMachineScaleSets"
+      error_message = "To create multiple node pools, the default node pool type must be VirtualMachineScaleSets."
+    }
+  }
 }
-

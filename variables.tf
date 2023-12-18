@@ -259,12 +259,6 @@ variable "dns_service_ip" {
   default     = null
 }
 
-variable "docker_bridge_cidr" {
-  type        = string
-  description = "(Optional) IP address (in CIDR notation) used as the Docker bridge IP address on nodes. **NOTE**: docker_bridge_cidr has been deprecated as the API no longer supports it and will be removed in version 4.0 of the provider."
-  default     = null
-}
-
 variable "enable_api_server_access_profile" {
   type        = bool
   description = "(Optional) Whether to enable API server access profile or not?"
@@ -552,6 +546,20 @@ variable "default_node_pool_message_of_the_day" {
   description = "(Optional) A base64-encoded string which will be written to /etc/motd after decoding. This allows customization of the message of the day for Linux nodes. It cannot be specified for Windows nodes and must be a static string (i.e. will be printed raw and not executed as a script). Changing this forces a new resource to be created"
   default     = null
 }
+
+variable "temporary_name_for_rotation" {
+  type        = string
+  description = "(optional) Optional) Specifies the name of the temporary node pool used to cycle the default node pool for VM resizing."
+  default     = "tempnp"
+  nullable    = false
+}
+
+variable "node_pool_type" {
+  type        = string
+  description = "(Optional) The type of Node Pool which should be created. Possible values are AvailabilitySet and VirtualMachineScaleSets. Defaults to VirtualMachineScaleSets. Changing this forces a new resource to be created"
+  default     = "VirtualMachineScaleSets"
+}
+
 #######################
 # auto scaler profile #
 #######################

@@ -32,17 +32,18 @@ module "complete" {
   kubelet_identity_object_id                 = azurerm_user_assigned_identity.kubelet.principal_id
 
   ##? Default node pool
+  node_pool_type                        = "VirtualMachineScaleSets"
   default_node_pool_name                = "system"
   default_node_pool_enable_auto_scaling = true
-  default_node_pool_vm_size             = "standard_d2ds_v5"
+  default_node_pool_vm_size             = "standard_ds2_v2"
   default_node_pool_min_count           = 1
   default_node_pool_max_count           = 2
   default_node_pool_max_pods            = 110
-
+  temporary_name_for_rotation           = "tmpcomp"
   ##? additional_node_pools
   additional_node_pools = {
     "nodepool01" = {
-      vm_size             = "standard_d2ds_v5"
+      vm_size             = "standard_ds2_v2"
       enable_auto_scaling = true
       max_count           = 2
       min_count           = 1
