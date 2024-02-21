@@ -33,7 +33,7 @@ managed within the footer file
 | Azure Account | `N/A`        | [Create Azure account](https://azure.microsoft.com/en-us/free)                                       | Yes      |
 | azure-cli     | `>=2.50.0`   | [Install azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)                   | Yes      |
 
-**⭐️ Don't forget to give the project a star! Thanks again! ⭐️**
+**⭐️ For Latest updates Don't forget to star the repo! ⭐️**
 
 ## Introduction
 
@@ -311,7 +311,7 @@ Contributions are what make the open source community such an amazing place to l
 
 If you have any suggestion that would make this project better, feel free to  fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement" with your suggestion.
 
-**⭐️ Don't forget to give the project a star! Thanks again! ⭐️**
+**⭐️ For Latest updates Don't forget to star the repo! ⭐️**
 
 <!-- LICENSE -->
 ## License

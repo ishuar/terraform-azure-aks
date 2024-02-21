@@ -34,7 +34,7 @@ managed within the footer file
 | Azure Account | `N/A`        | [Create Azure account](https://azure.microsoft.com/en-us/free)                                       | Yes      |
 | azure-cli     | `>=2.50.0`   | [Install azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)                   | Yes      |
 
-**⭐️ Don't forget to give the project a star! Thanks again! ⭐️**
+**⭐️ For Latest updates Don't forget to star the repo! ⭐️**
 
 ## Introduction
 

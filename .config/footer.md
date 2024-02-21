@@ -5,7 +5,7 @@ Contributions are what make the open source community such an amazing place to l
 
 If you have any suggestion that would make this project better, feel free to  fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement" with your suggestion.
 
-**⭐️ Don't forget to give the project a star! Thanks again! ⭐️**
+**⭐️ For Latest updates Don't forget to star the repo! ⭐️**
 
 <!-- LICENSE -->
 ## License
