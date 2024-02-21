@@ -80,8 +80,6 @@ Examples are availabe in `examples` directory.
 
 ## Submodule
 
-**⭐️ Don't forget to give the project a star! Thanks again! ⭐️**
-
 ## Requirements
 
 | Name | Version |
